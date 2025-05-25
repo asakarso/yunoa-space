@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id', // Relasi ke table roles
+        'verified', // Untuk dokter
     ];
 
     /**
@@ -43,6 +45,24 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'verified' => 'boolean', // Untuk dokter
         ];
     }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function dokterProfile()
+    {
+        return $this->hasOne(DokterProfile::class);
+    }
+
+    public function operatorProfile()
+    {
+        return $this->hasOne(OperatorProfile::class);
+    }
+
+
 }

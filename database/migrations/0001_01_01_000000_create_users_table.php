@@ -17,6 +17,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+
+            $table->foreignId('role_id')->constrained('roles'); //untuk relasi ke table roles
+            $table->boolean('verified')->default(false); //untuk dokter
+            
             $table->rememberToken();
             $table->timestamps();
         });
