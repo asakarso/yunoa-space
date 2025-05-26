@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_role')->unique(); // Nama role, misalnya 'admin', 'dokter', 'pasien'
-            $table->timestamps();
+        Schema::create('assesment_questions', function (Blueprint $table) {
+            $table->increments('id_question'); // primary key auto increment
+            $table->text('pertanyaan'); // kolom pertanyaan
+            // $table->timestamps(); // opsional, kalau ingin simpan created_at dan updated_at
         });
     }
 
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('assesment_questions');
     }
 };

@@ -2,67 +2,39 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    protected $table = 'users';
+    protected $primaryKey = 'id_user';
+    public $timestamps = false;
+    protected $rememberTokenName = null;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role_id', // Relasi ke table roles
-        'verified', // Untuk dokter
+        'nama_user',
+        'email_user',
+        'pass_user',
+        'nomor_telepon',
+        'total_konseling',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'pass_user',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public function getAuthPassword()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'verified' => 'boolean', // Untuk dokter
-        ];
+        return $this->pass_user;
     }
 
-    public function role()
+    public function username()
     {
-        return $this->belongsTo(Role::class);
+        return 'email_user';
     }
 
-    public function dokterProfile()
+    public function roles()
     {
-        return $this->hasOne(DokterProfile::class);
+        return $this->belongsToMany(Role::class, 'user_roles', 'id_user', 'id_role');
     }
-
-    public function operatorProfile()
-    {
-        return $this->hasOne(OperatorProfile::class);
-    }
-
-
 }

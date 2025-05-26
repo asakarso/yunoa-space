@@ -10,32 +10,27 @@ class LoginController extends Controller
 {
     public function showLoginForm()
     {
-        return view('auth.login'); 
+        return view('auth.login');
     }
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->validate([
+            'email_user' => 'required|email',
+            'pass_user' => 'required',
+        ]);
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
+        $user = \App\Models\User::where('email_user', $credentials['email_user'])->first();
 
-            // Kalau role dokter dan belum diverifikasi, logout
-            if ($user->role->nama_role === 'Dokter' && !$user->verified) {
-                Auth::logout();
-                return back()->withErrors(['Akun Anda belum diverifikasi admin.']);
-            }
-
-            // Redirect berdasarkan role
-            return match ($user->role->nama_role) {
-                'Admin' => redirect('/admin/dashboard'),
-                'Dokter' => redirect('/dokter/dashboard'),
-                'Operator' => redirect('/operator/dashboard'),
-                default => redirect('/user/dashboard'),
-            };
+        if ($user && \Hash::check($credentials['pass_user'], $user->pass_user)) {
+            Auth::login($user);
+            $request->session()->regenerate();
+            return redirect()->intended('/user/dashboard');
         }
 
-        return back()->withErrors(['Email atau password salah']);
+        return back()->withErrors([
+            'email_user' => 'Email atau password salah.',
+        ]);
     }
 
     public function logout(Request $request)
@@ -43,6 +38,7 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect('/login');
     }
 }

@@ -6,11 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
-    protected $fillable = ['nama_role'];
+    protected $table = 'roles';
+    protected $primaryKey = 'id_role';
+    public $incrementing = true;
+    protected $keyType = 'int';
+    public $timestamps = false;
+
+    protected $fillable = [
+        'nama_role',
+    ];
 
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(User::class, 'user_roles', 'id_role', 'id_user');
     }
-
 }

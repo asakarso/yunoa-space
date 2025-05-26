@@ -23,13 +23,13 @@
           @csrf
 
           <div class="mb-3">
-              <label for="email" class="form-label">Email address</label>
-              <input type="email" class="form-control" id="email" name="email" required autofocus>
+              <label for="email_user" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email_user" name="email_user" required autofocus>
           </div>
 
           <div class="mb-3">
-              <label for="password" class="form-label">Password</label>
-              <input type="password" class="form-control" id="password" name="password" required>
+              <label for="pass_user" class="form-label">Password</label>
+              <input type="password" class="form-control" id="pass_user" name="pass_user" required>
           </div>
 
           <div class="d-grid">
