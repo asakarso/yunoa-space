@@ -94,93 +94,96 @@
         </div>
     </footer>
     <script>
-        const pertanyaan = [
-            "In the past month, how often did you feel tired for no reason?",
-            "In the past month, how often did you feel nervous?",
-            "In the past month, how often did you feel hopeless?",
-            "In the past month, how often did you feel restless or fidgety?",
-            "In the past month, how often did you feel depressed?"
-            ];
+        const now = new Date();
+        const tanggal = now.toISOString().slice(0, 10);
+        const waktu = now.toTimeString().slice(0, 8);
 
-            let indexPertanyaan = 0;
-            const btnPrev = document.getElementById("buttonPrev");
-            const pertanyaanField = document.querySelector(".pertanyaan");
-            pertanyaanField.textContent = pertanyaan[0];
+        console.log('Tanggal:', tanggal); // contoh: 2025-05-25
+        console.log('Waktu:', waktu);     // contoh: 09:00:00
 
-            function changeElement(index){
-                pertanyaanField.textContent = pertanyaan[index];
+        const pertanyaan = <?= json_encode($pertanyaan) ?>;
 
-                if (index > 0 ){
-                    btnPrev.classList.remove("invisible");
-                } else {
-                    btnPrev.classList.add("invisible");
-                }
+        let indexPertanyaan = 0;
+        const btnPrev = document.getElementById("buttonPrev");
+        const pertanyaanField = document.querySelector(".pertanyaan");
+        pertanyaanField.textContent = pertanyaan[0];
 
-                if(jawaban[indexPertanyaan] != undefined){
-                    document.querySelectorAll('input[name="answer"]').forEach((choice)=>{
-                        if(choice.value == jawaban[indexPertanyaan]){
-                            choice.checked = true;
-                        }
-                    });
-                } else {
-                    document.querySelectorAll('input[name="answer"]').forEach((choice)=>{
-                        choice.checked = false;
-                    });
-                }
+        function changeElement(index){
+            pertanyaanField.textContent = pertanyaan[index];
 
-                if(indexPertanyaan==pertanyaan.length-1){
-                    document.getElementById("buttonSubmit").classList.remove("d-none");
-                    document.getElementById("buttonNext").classList.add("d-none");
-                } else {
-                    document.getElementById("buttonSubmit").classList.add("d-none");
-                    document.getElementById("buttonNext").classList.remove("d-none");
-                }
+            if (index > 0 ){
+                btnPrev.classList.remove("invisible");
+            } else {
+                btnPrev.classList.add("invisible");
             }
 
-            const jawaban = [];
-
-            document.querySelectorAll('input[name="answer"]').forEach((choice)=>{
-                choice.addEventListener("change", function(){
-                    if(choice.checked){
-                        jawaban[indexPertanyaan] = choice.value;
+            if(jawaban[indexPertanyaan] != undefined){
+                document.querySelectorAll('input[name="answer"]').forEach((choice)=>{
+                    if(choice.value == jawaban[indexPertanyaan]){
+                        choice.checked = true;
                     }
-
-                    document.getElementById('errMsg').classList.add("invisible");
                 });
-            });
+            } else {
+                document.querySelectorAll('input[name="answer"]').forEach((choice)=>{
+                    choice.checked = false;
+                });
+            }
 
-            const btnNext = document.getElementById("buttonNext");
-            btnNext.addEventListener("click", function(ev){
-                if(jawaban[indexPertanyaan]==undefined){
-                    ev.preventDefault();
-                    document.getElementById('errMsg').classList.remove("invisible");
-                } else {
-                    indexPertanyaan++;
-                    changeElement(indexPertanyaan);
+            if(indexPertanyaan==pertanyaan.length-1){
+                document.getElementById("buttonSubmit").classList.remove("d-none");
+                document.getElementById("buttonNext").classList.add("d-none");
+            } else {
+                document.getElementById("buttonSubmit").classList.add("d-none");
+                document.getElementById("buttonNext").classList.remove("d-none");
+            }
+        }
+
+        const jawaban = [];
+
+        document.querySelectorAll('input[name="answer"]').forEach((choice)=>{
+            choice.addEventListener("change", function(){
+                if(choice.checked){
+                    jawaban[indexPertanyaan] = choice.value;
                 }
-            });
-            
-            btnPrev.addEventListener("click", function(){
-                indexPertanyaan--;
-                changeElement(indexPertanyaan);
+
                 document.getElementById('errMsg').classList.add("invisible");
             });
+        });
 
-            const btnSubmit = document.getElementById("buttonSubmit");
-            btnSubmit.addEventListener("click", function(ev){
-                if(jawaban[indexPertanyaan]==undefined){
-                    ev.preventDefault();
-                    document.getElementById('errMsg').classList.remove("invisible");
-                } else {
-                    // code ke database
-                    // trus arahin ke halaman hasil
-                }
-            });
+        const btnNext = document.getElementById("buttonNext");
+        btnNext.addEventListener("click", function(ev){
+            if(jawaban[indexPertanyaan]==undefined){
+                ev.preventDefault();
+                document.getElementById('errMsg').classList.remove("invisible");
+            } else {
+                indexPertanyaan++;
+                changeElement(indexPertanyaan);
+            }
+        });
+        
+        btnPrev.addEventListener("click", function(){
+            indexPertanyaan--;
+            changeElement(indexPertanyaan);
+            document.getElementById('errMsg').classList.add("invisible");
+        });
 
-            window.addEventListener('beforeunload', function (e) {
-                e.preventDefault();
-                e.returnValue = '';
-            });
-            </script>
+        const btnSubmit = document.getElementById("buttonSubmit");
+        btnSubmit.addEventListener("click", function(ev){
+            if(jawaban[indexPertanyaan]==undefined){
+                ev.preventDefault();
+                document.getElementById('errMsg').classList.remove("invisible");
+            } else {
+                const tglSubmit = new Date().toTimeString().slice(0, 8);;
+                console.log(tglSubmit);
+                // code ke database
+                // trus arahin ke halaman hasil
+            }
+        });
+
+        window.addEventListener('beforeunload', function (e) {
+            e.preventDefault();
+            e.returnValue = '';
+        });
+    </script>
 </body>
 </html>
