@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('tanggal_assess');
             $table->time('waktu_assess');
             $table->time('jam_selesai');
-            $table->text('laporan_hasil');
+            $table->integer('skor_hasil');
 
             $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');
         });

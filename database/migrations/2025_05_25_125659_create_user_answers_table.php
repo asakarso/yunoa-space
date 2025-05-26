@@ -10,10 +10,9 @@ return new class extends Migration
     {
         Schema::create('user_answers', function (Blueprint $table) {
 
-            $table->unsignedBigInteger('id_assess'); // FK ke tabel assesments
+            $table->unsignedInteger('id_assess'); // FK ke tabel assesments
             $table->unsignedInteger('id_question'); // FK ke assesment_questions
-            $table->string('user_choice'); // pilihan user
-            $table->integer('skor'); // skor jawaban user
+            $table->Integer('user_choice'); // pilihan user
 
             // index untuk kolom foreign key
             $table->index('id_assess');

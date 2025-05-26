@@ -9,7 +9,9 @@ class AssessmentSeeder extends Seeder
 {
     public function run()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('assessments')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         DB::table('assessments')->insert([
             [
@@ -17,14 +19,7 @@ class AssessmentSeeder extends Seeder
                 'tanggal_assess' => '2025-05-25',
                 'waktu_assess' => '09:00:00',
                 'jam_selesai' => '10:00:00',
-                'laporan_hasil' => 'Hasil asesmen menunjukkan pasien dalam kondisi baik.',
-            ],
-            [
-                'id_user' => 2,
-                'tanggal_assess' => '2025-05-24',
-                'waktu_assess' => '13:30:00',
-                'jam_selesai' => '14:15:00',
-                'laporan_hasil' => 'Perlu tindakan lanjutan untuk kasus ini.',
+                'skor_hasil' => 50,
             ],
         ]);
     }
