@@ -12,7 +12,7 @@ return new class extends Migration
             $table->increments('id_review'); // Primary key auto increment
             $table->unsignedInteger('id_user');      // FK ke users
             $table->unsignedInteger('id_dokter');    // FK ke users (dokter)
-            $table->unsignedBigInteger('id_konsul'); // FK ke consultations (asumsi tipe bigint)
+            $table->unsignedInteger('id_konsul'); // FK ke consultations (asumsi tipe bigint)
 
             $table->date('tanggal_review');
             $table->time('waktu_review');

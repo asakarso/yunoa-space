@@ -9,6 +9,8 @@ class UserRoleSeeder extends Seeder
 {
     public function run(): void
     {
+        DB::table('user_roles')->truncate();
+
         DB::table('user_roles')->insert([
             ['id_user' => 1, 'id_role' => 1],
             ['id_user' => 2, 'id_role' => 2],

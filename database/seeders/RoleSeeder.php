@@ -1,3 +1,4 @@
+<?php
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -10,6 +11,10 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('roles')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         DB::table('roles')->insert([
             ['nama_role' => 'admin'],
             ['nama_role' => 'pengguna'],

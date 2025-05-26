@@ -9,7 +9,9 @@ class ReviewSeeder extends Seeder
 {
     public function run()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('reviews')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         DB::table('reviews')->insert([
             [
@@ -22,18 +24,7 @@ class ReviewSeeder extends Seeder
                 'deskripsi_review' => 'Dokternya sangat ramah dan membantu dalam konsultasi.',
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
-            [
-                'id_user' => 2,
-                'id_dokter' => 1,
-                'id_konsul' => 2,
-                'tanggal_review' => now()->toDateString(),
-                'waktu_review' => now()->toTimeString(),
-                'rating' => 4,
-                'deskripsi_review' => 'Pelayanan bagus, tapi perlu perbaikan waktu tunggu.',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+            ]
         ]);
     }
 }

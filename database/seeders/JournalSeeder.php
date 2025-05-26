@@ -9,6 +9,10 @@ class JournalSeeder extends Seeder
 {
     public function run()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('journals')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         DB::table('journals')->insert([
             [
                 'judul_jurnal' => 'Mengenal Kesehatan Mental',

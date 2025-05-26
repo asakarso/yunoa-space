@@ -29,6 +29,22 @@ class UserSeeder extends Seeder
                 'nomor_telepon' => '089876543210',
                 'total_konseling' => 2,
             ],
+            [
+                'id_user' => 3,
+                'nama_user' => 'Asa',
+                'email_user' => 'asa@example.com',
+                'pass_user' => Hash::make('password'),
+                'nomor_telepon' => '089876543210',
+                'total_konseling' => 0,
+            ],
+            [
+                'id_user' => 4,
+                'nama_user' => 'Wati',
+                'email_user' => 'wati@example.com',
+                'pass_user' => Hash::make('secret456'),
+                'nomor_telepon' => '089876543210',
+                'total_konseling' => 6,
+            ],
         ]);
     }
 }

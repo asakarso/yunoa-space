@@ -27,20 +27,12 @@ class DatabaseSeeder extends Seeder
             UserRoleSeeder::class,
             AssessmentSeeder::class,
             AssesmentQuestionSeeder::class,
-            AnswerChoiceSeeder::class,
-            AssesmentAnswerSeeder::class,
             UserAnswerSeeder::class,
             ConsultationSeeder::class,
             ReviewSeeder::class,
             ArticleSeeder::class,
             JournalSeeder::class,
 
-        ]);
-
-        // User test tambahan dengan factory (opsional)
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
         ]);
     }
 }
