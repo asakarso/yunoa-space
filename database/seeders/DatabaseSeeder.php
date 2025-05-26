@@ -34,5 +34,11 @@ class DatabaseSeeder extends Seeder
             JournalSeeder::class,
 
         ]);
+
+            // Jalankan seeder untuk produk
+        //     $this->call([
+        //     ProdukSeeder::class,
+        // ]);
+
     }
 }
