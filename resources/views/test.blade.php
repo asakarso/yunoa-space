@@ -3,6 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Ikuti self-assessment singkat dari Yunoa Space untuk mengetahui kondisi kesehatan mental Anda secara umum dan dapatkan panduan awal.">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Self-Assessment | Yunoa Space</title>
     
     <style>
@@ -47,7 +48,7 @@
 <body>
     <x-navbar></x-navbar>
 
-    <main class="container d-flex flex-column justify-content-center gap-5 py-5">
+    <main class="container d-flex flex-column justify-content-center gap-5 py-5 px-5 w-75">
         <h1 class="fw-bold pertanyaan"></h1>
 
         <div class="d-flex flex-wrap gap-3 justify-content-center">
@@ -82,7 +83,7 @@
             <div class="d-flex justify-content-between">
                 <a href="#" class="fw-bold invisible" id="buttonPrev"><i class="bi bi-arrow-left ps-3"></i> Previous</a>
                 <a href="#" class="fw-bold" id="buttonNext">Next<i class="bi bi-arrow-right ps-3"></i></a>
-                <a href="#" class="fw-bold d-none" id="buttonSubmit">Submit</a>
+                <button type="button" class="fw-bold d-none" id="buttonSubmit">Submit</button>
             </div>
             <p class="text-danger align-self-end mt-3 invisible" id="errMsg">Please select one of the answers</p>
         </div>
@@ -93,11 +94,14 @@
             <p>© 2025 Yunoa Space. All rights reserved.</p>
         </div>
     </footer>
+    <? use Illuminate\Support\Facades\Auth; ?>
     <script>
+        const userId = <?= json_encode(Auth::id()) ?>;
         const now = new Date();
         const tanggal = now.toISOString().slice(0, 10);
         const waktu = now.toTimeString().slice(0, 8);
 
+        console.log('ID:', userId); 
         console.log('Tanggal:', tanggal); // contoh: 2025-05-25
         console.log('Waktu:', waktu);     // contoh: 09:00:00
 
@@ -172,12 +176,53 @@
             if(jawaban[indexPertanyaan]==undefined){
                 ev.preventDefault();
                 document.getElementById('errMsg').classList.remove("invisible");
+                console.log('jawaban:', jawaban); 
             } else {
-                const tglSubmit = new Date().toTimeString().slice(0, 8);;
-                console.log(tglSubmit);
-                // code ke database
-                // trus arahin ke halaman hasil
+                document.getElementById('errMsg').classList.add("invisible");
+                const waktuSubmit = new Date().toTimeString().slice(0, 8);;
+                console.log(waktuSubmit);
+                let skor = 0;
+                jawaban.forEach(jawab => {
+                    skor += Number(jawab); 
+                });
+
+                btnSubmit.disabled = true;
+                btnSubmit.textContent = 'Submitting...';
+
+                fetch("{{ url('/self-assessment/store-result') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        tanggal: tanggal,
+                        waktu: waktu,
+                        waktuSubmit: waktuSubmit,
+                        jawaban: jawaban,
+                        skor: skor
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    if (data && data.redirect_url) {
+                        window.location.href = data.redirect_url; 
+                    } else {
+                        console.log("Sukses, tapi tidak ada URL redirect:", data);
+                        alert(`Assessment berhasil disimpan! Skor Anda: ${data.score}. Halaman tidak dialihkan.`);
+                        btnSubmit.textContent = 'Submitted';
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
             }
+            
         });
 
         window.addEventListener('beforeunload', function (e) {

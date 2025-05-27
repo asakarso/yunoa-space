@@ -6,7 +6,7 @@ a {
     font-weight: 500;
 }
 
-a:hover {
+a:hover, button[type=submit]:hover {
     font-weight: 600;
 }
 

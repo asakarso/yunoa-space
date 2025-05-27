@@ -46,7 +46,7 @@ class LoginController extends Controller
                 'admin' => redirect('/admin/dashboard'),
                 'dokter' => redirect('/dokter/dashboard'),
                 'operator' => redirect('/operator/dashboard'),
-                default => redirect('/user/dashboard'),
+                default => redirect('/homepage'),
             };
         }
 
