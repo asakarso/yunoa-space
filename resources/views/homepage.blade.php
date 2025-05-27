@@ -11,19 +11,7 @@
 </head>
 
 <body>
-    <nav class="container mt-4 d-flex justify-content-between">
-        <a class="navbar-brand" href="#">
-            <img src="{{ asset('landing-page/logo.png') }}" alt="Yunoa Space" width="160px">
-        </a>
-
-        <div class="d-flex gap-5 align-items-center colors-ijo-tua">
-            <a class="nav-link link-secondary" href="#about">About Us</a>
-            <a class="nav-link link-secondary" href="#feature">Feature</a>
-            <a class="nav-link link-secondary" href="#specialists">Specialists</a>
-            <a class="nav-link link-secondary" href="#review">Reviews</a>
-            <a class="login px-4" href="{{ url('/login')}}" role="button">Log In</a>
-        </div>
-    </nav>
+    <x-navbar></x-navbar>
 
     <header class="hero container mt-5">
         <div class="d-flex gap-5 align-items-center justify-content-between">
@@ -32,7 +20,7 @@
                 <p class="tagline">No.1 Platform for Mental Consulting</p>
                 <h1 class="fw-bold mb-3"> Your Trusted Partner <br> for Mental Health Support</h1>
                 <p class="mb-4">We are here to help you find peace, balance, and happiness in life. Begin your journey toward better mental health with us.</p>
-                <a href="#" class="px-4">Sign Up Now</a>
+                <a href="{{ url('/self-assessment')}}" class="px-4">Take Screening Test</a>
             </div>
 
             <!-- Kolom Kanan (Gambar) -->
@@ -185,17 +173,9 @@
             </div>
         </section>
     </main>
-    <footer>
-        <div class="container mt-5 py-5">
-            <img src="{{ asset('landing-page/logo.png') }}" alt="Yunoa Space" width="160px" color="black" class="footer-img">
-            <p class="mt-3">Yunoa Space adalah platform kesehatan mental yang membantu Anda menemukan ketenangan dan keseimbangan dalam hidup. Kami menyediakan akses mudah ke layanan konsultasi profesional untuk mendukung perjalanan kesehatan mental Anda.</p>
-            <div class="mt-1 d-flex gap-5">
-                <a class="link-light" href="#about">About Us</a>
-                <a class="link-light" href="#feature">Features</a>
-                <a class="link-light" href="#specialists">Find a doctor</a>
-                <a class="link-light" href="#reviews">Testimonials</a>
-            </div>
-            <p class="mt-4">&copy; 2025 Yunoa Space. All rights reserved.</p>
+    <footer class="mt-5 bg-white text-black">
+        <div class="container text-center py-3">
+            <p>© 2025 Yunoa Space. All rights reserved.</p>
         </div>
     </footer>
 </body>

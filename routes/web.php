@@ -1,8 +1,18 @@
 <?php
 
-use App\Http\Controllers\AssesmentQuestionController;
+use App\Http\Controllers\AssessmentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+
+Route::middleware('guest')->group(function () {
+    Route::get('/', function () {
+        return view('landingpage');
+    });
+
+    // Login routes
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+});
 
 Route::middleware(['auth', 'role:Admin'])->group(function () {
     Route::get('/admin/dashboard', function () {
@@ -23,23 +33,23 @@ Route::middleware(['auth', 'role:Operator'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:Pengguna'])->group(function () {
-    Route::get('/user/dashboard', function () {
-        return view('user.dashboard');
+    // Route::get('/user/dashboard', function () {
+    //     return view('user.dashboard');
+    // });
+
+    Route::get('/homepage', function () {
+        return view('homepage');
     });
 
     Route::get('/self-assessment', function () {
         return view('assessment');
     });
 
-    Route::get('/self-assessment/test', [AssesmentQuestionController::class, 'showQuestion']);
+    Route::get('/self-assessment/test', [AssessmentController::class, 'showQuestion']);
+
+    Route::post('/self-assessment/store-result', [AssessmentController::class, 'store']);
+
+    Route::get('/self-assessment/result', [AssessmentController::class, 'showResult']);
 });
 
-// Login routes
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-// Halaman awal
-Route::get('/', function () {
-    return view('landingpage');
-});
