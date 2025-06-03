@@ -3,6 +3,8 @@
 use App\Http\Controllers\AssessmentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\JournalController;
+
 
 Route::middleware('guest')->group(function () {
     Route::get('/', function () {
@@ -33,10 +35,6 @@ Route::middleware(['auth', 'role:Operator'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:Pengguna'])->group(function () {
-    // Route::get('/user/dashboard', function () {
-    //     return view('user.dashboard');
-    // });
-
     Route::get('/homepage', function () {
         return view('homepage');
     });
@@ -46,10 +44,27 @@ Route::middleware(['auth', 'role:Pengguna'])->group(function () {
     });
 
     Route::get('/self-assessment/test', [AssessmentController::class, 'showQuestion']);
-
     Route::post('/self-assessment/store-result', [AssessmentController::class, 'store']);
-
     Route::get('/self-assessment/result', [AssessmentController::class, 'showResult']);
 });
 
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+
+    Route::middleware(['auth'])->group(function () {
+        Route::resource('journals', JournalController::class)->parameters([
+            'journals' => 'id_jurnal'
+        ]);
+});
+
+
+
+// // Semua route yang butuh autentikasi (tanpa role spesifik)
+// Route::middleware(['auth'])->group(function () {
+//     // Resource journals dengan parameter id_jurnal
+//     Route::resource('journals', JournalController::class)->parameters([
+//         'journals' => 'id_jurnal'
+//     ]);
+//     Route::get('/journal/history', [JournalController::class, 'history'])->name('journal.history');
+    // Route logout
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
