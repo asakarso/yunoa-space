@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\CounselingController;
 
 use Illuminate\Support\Facades\Route;
 
