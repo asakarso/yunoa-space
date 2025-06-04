@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\AssessmentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\AssessmentController;
+use App\Http\Controllers\CounselingController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/', function () {
@@ -32,11 +33,9 @@ Route::middleware(['auth', 'role:Operator'])->group(function () {
     });
 });
 
-Route::middleware(['auth', 'role:Pengguna'])->group(function () {
-    // Route::get('/user/dashboard', function () {
-    //     return view('user.dashboard');
-    // });
+Route::get('/counseling/payment/{doctor_id}', [CounselingController::class, 'showPayment'])->name('counseling.payment');
 
+Route::middleware(['auth', 'role:Pengguna'])->group(function () {
     Route::get('/homepage', function () {
         return view('homepage');
     });
