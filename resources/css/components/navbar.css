@@ -1,0 +1,36 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+a {
+    color: #0F5A4A;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+a:hover, button[type=submit]:hover {
+    font-weight: 600;
+}
+
+body {
+    font-family: Inter, sans-serif;
+    color: #1e1e1e;
+}
+
+.colors-ijo {
+    color: #6BB99F;
+}
+
+.colors-ijo-tua {
+    color: #0F5A4A;
+}
+
+a.profile {
+    background-color: #0F5A4A !important;
+    color: white !important;
+    padding: 8px 16px;
+    border-radius: 24px;
+}
+
+.left-hero a:hover, .profile:hover {
+    background-color: #6BB99F;
+    color: #1e1e1e;
+}
