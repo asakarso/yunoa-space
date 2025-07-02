@@ -39,6 +39,7 @@ Route::middleware(['auth', 'role:Operator'])->group(function () {
 });
 
 Route::get('/counseling/payment/{doctor_id}', [CounselingController::class, 'showPayment'])->name('counseling.payment');
+Route::post('/counseling/payment/{doctor_id}', [CounselingController::class, 'processPayment'])->name('counseling.processPayment');
 
 Route::middleware(['auth', 'role:Pengguna'])->group(function () {
     Route::get('/homepage', function () {
