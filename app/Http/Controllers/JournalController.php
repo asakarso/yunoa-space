@@ -79,6 +79,8 @@ class JournalController extends Controller
         if ($request->hasFile('gambar_cover')) {
             $path = $request->file('gambar_cover')->store('journal_covers', 'public');
             $validated['gambar_cover'] = $path;
+
+
         }
 
         $journal->update($validated);
