@@ -36,10 +36,10 @@ class LoginController extends Controller
             }
 
             // Cek verifikasi kalau rolenya dokter
-            if (strtolower($role->nama_role) === 'dokter' && !$user->verified) {
-                Auth::logout();
-                return back()->withErrors(['Akun Anda belum diverifikasi admin.']);
-            }
+            // if (strtolower($role->nama_role) === 'dokter' && !$user->verified) {
+            //     Auth::logout();
+            //     return back()->withErrors(['Akun Anda belum diverifikasi admin.']);
+            // }
 
             // Redirect berdasarkan role
             return match (strtolower($role->nama_role)) {

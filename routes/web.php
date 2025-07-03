@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\CounselingController;
+use App\Http\Controllers\PesanController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/', function () {
@@ -38,8 +39,6 @@ Route::middleware(['auth', 'role:Operator'])->group(function () {
     });
 });
 
-Route::get('/counseling/payment/{doctor_id}', [CounselingController::class, 'showPayment'])->name('counseling.payment');
-Route::post('/counseling/payment/{doctor_id}', [CounselingController::class, 'processPayment'])->name('counseling.processPayment');
 
 Route::middleware(['auth', 'role:Pengguna'])->group(function () {
     Route::get('/homepage', function () {
@@ -49,12 +48,17 @@ Route::middleware(['auth', 'role:Pengguna'])->group(function () {
     Route::get('/self-assessment', function () {
         return view('assessment');
     });
-
     Route::get('/self-assessment/test', [AssessmentController::class, 'showQuestion']);
-
     Route::post('/self-assessment/store-result', [AssessmentController::class, 'store']);
-
     Route::get('/self-assessment/result', [AssessmentController::class, 'showResult']);
+
+    Route::get('/counseling/payment/{doctor_id}', [CounselingController::class, 'showPayment'])->name('counseling.payment');
+    Route::post('/counseling/payment/{doctor_id}', [CounselingController::class, 'processPayment'])->name('counseling.processPayment');
+
+    Route::post('/chat/send', [PesanController::class, 'send'])->name('chat.send');
+    Route::get('/chat/{userId}', [PesanController::class, 'showChat'])->name('chat');
+    
+    Route::get('/counseling/{userId}', [PesanController::class, 'showList'])->name('consultation');
 });
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

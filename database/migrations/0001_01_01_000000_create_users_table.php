@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->increments('id_user');  // primary key dengan nama id_user
+            $table->increments('id_user'); 
             $table->string('nama_user');
+            $table->string('foto_profil');
             $table->string('email_user');
             $table->string('pass_user');
             $table->string('nomor_telepon', 20);
             $table->integer('total_konseling')->default(0);
-            // Tidak ada timestamps dan rememberToken sesuai permintaan
         });
 
         // Schema::create('password_reset_tokens', function (Blueprint $table) {
