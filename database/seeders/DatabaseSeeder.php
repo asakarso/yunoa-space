@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
             ReviewSeeder::class,
             ArticleSeeder::class,
             JournalSeeder::class,
-
+            PesanSeeder::class
         ]);
 
             // Jalankan seeder untuk produk

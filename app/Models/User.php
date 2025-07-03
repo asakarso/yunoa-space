@@ -86,6 +86,7 @@ class User extends Authenticatable
         'pass_user',
         'nomor_telepon',
         'total_konseling',
+        'foto_profil'
     ];
 
     protected $hidden = [

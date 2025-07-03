@@ -15,8 +15,8 @@ class ConsultationSeeder extends Seeder
 
         DB::table('consultations')->insert([
             [
-                'id_user' => 1, // Riyana sebagai pasien
-                'id_dokter' => 2, // Budi sebagai dokter
+                'id_user' => 2, 
+                'id_dokter' => 4, 
                 'tanggal_konsultasi' => now()->toDateString(),
                 'jam_mulai' => '10:00:00',
                 'jam_selesai' => '10:30:00',

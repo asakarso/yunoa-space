@@ -9,12 +9,16 @@ return new class extends Migration {
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('doctor_id')->constrained()->onDelete('cascade');
+            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('doctor_id');
+            
             $table->decimal('amount', 10, 2);
             $table->string('method');
             $table->string('status')->default('pending');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id_user')->on('users')->onDelete('cascade');
+            $table->foreign('doctor_id')->references('id_user')->on('users')->onDelete('cascade');
         });
     }
 
