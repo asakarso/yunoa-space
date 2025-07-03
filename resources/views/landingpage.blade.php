@@ -32,7 +32,7 @@
                 <p class="tagline">No.1 Platform for Mental Consulting</p>
                 <h1 class="fw-bold mb-3"> Your Trusted Partner <br> for Mental Health Support</h1>
                 <p class="mb-4">We are here to help you find peace, balance, and happiness in life. Begin your journey toward better mental health with us.</p>
-                <a href="#" class="px-4">Sign Up Now</a>
+                <a href="{{ route('register') }}" class="px-4">Sign Up Now</a>
             </div>
 
             <!-- Kolom Kanan (Gambar) -->

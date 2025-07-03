@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\AssessmentController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\JournalController;
-
+use App\Http\Controllers\AssessmentController;
+use App\Http\Controllers\CounselingController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/', function () {
@@ -14,6 +15,10 @@ Route::middleware('guest')->group(function () {
     // Login routes
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
+
+    // Register routes
+    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [RegisterController::class, 'register']);
 });
 
 Route::middleware(['auth', 'role:Admin'])->group(function () {
@@ -34,6 +39,9 @@ Route::middleware(['auth', 'role:Operator'])->group(function () {
     });
 });
 
+Route::get('/counseling/payment/{doctor_id}', [CounselingController::class, 'showPayment'])->name('counseling.payment');
+Route::post('/counseling/payment/{doctor_id}', [CounselingController::class, 'processPayment'])->name('counseling.processPayment');
+
 Route::middleware(['auth', 'role:Pengguna'])->group(function () {
     Route::get('/homepage', function () {
         return view('homepage');
@@ -48,23 +56,10 @@ Route::middleware(['auth', 'role:Pengguna'])->group(function () {
     Route::get('/self-assessment/result', [AssessmentController::class, 'showResult']);
 });
 
-
-
-    Route::middleware(['auth'])->group(function () {
-        Route::resource('journals', JournalController::class)->parameters([
-            'journals' => 'id_jurnal'
-        ]);
-});
-
-
-
-// // Semua route yang butuh autentikasi (tanpa role spesifik)
-// Route::middleware(['auth'])->group(function () {
-//     // Resource journals dengan parameter id_jurnal
-//     Route::resource('journals', JournalController::class)->parameters([
-//         'journals' => 'id_jurnal'
-//     ]);
-//     Route::get('/journal/history', [JournalController::class, 'history'])->name('journal.history');
-    // Route logout
+Route::middleware(['auth'])->group(function () {
+    Route::resource('journals', JournalController::class)->parameters([
+        'journals' => 'id_jurnal'
+    ]);
+    
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
+});
