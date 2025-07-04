@@ -36,7 +36,7 @@
                 <div class="col-md-6 col-lg-4">
                     <div class="card doctor-card h-100">
                         {{-- Use placeholder if no photo is available --}}
-                        <img src="{{ $doctor->photo ? asset('storage/' . $doctor->photo) : asset('images/default-profile.png') }}" class="card-img-top" alt="Dr. {{ $doctor->nama_user }}">
+                        <img src="{{ $doctor->foto_profil ? asset('storage/' . $doctor->foto_profil) : asset('images/default-profile.png') }}" class="card-img-top" alt="Dr. {{ $doctor->nama_user }}">
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title fw-bold">{{ $doctor->nama_user }}</h5>
                             <p class="card-text text-success fw-semibold">{{ $doctor->specialization }}</p>
@@ -52,7 +52,7 @@
                                 </div>
 
                                 {{-- The button now correctly links to the payment route --}}
-                                <a href="{{ route('counseling.payment', ['doctor_id' => $doctor->id_user]) }}" class="btn btn-primary-yunoa w-100">Start Consultation</a>
+                                <a href="{{ route('counseling.processPayment', ['doctor_id' => $doctor->id_user]) }}" class="btn btn-primary-yunoa w-100">Start Consultation</a>
                             </div>
                         </div>
                     </div>

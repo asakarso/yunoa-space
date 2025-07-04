@@ -40,7 +40,7 @@ Route::middleware(['auth', 'role:Operator'])->group(function () {
         return view('operator.dashboard');
     });
 });
-Route::get('/consultation', [ConsultationController::class, 'index'])->name('consultation');
+Route::get('/counseling/add', [ConsultationController::class, 'index'])->name('consultation');
 
 Route::middleware(['auth', 'role:Pengguna'])->group(function () {
     Route::get('/homepage', function () {
@@ -59,14 +59,14 @@ Route::middleware(['auth', 'role:Pengguna'])->group(function () {
 
     Route::post('/chat/send', [PesanController::class, 'send'])->name('chat.send');
     Route::get('/chat/{userId}', [PesanController::class, 'showChat'])->name('chat');
-    
-    Route::get('/counseling/{userId}', [PesanController::class, 'showList'])->name('consultation');
+
+    Route::get('/counseling/{userId}', [PesanController::class, 'showList'])->name('counselingList');
+
+    Route::resource('journals', JournalController::class)->parameters([
+        'journals' => 'id_jurnal'
+    ]) ;
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::resource('journals', JournalController::class)->parameters([
-        'journals' => 'id_jurnal'
-    ]);
-    
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });

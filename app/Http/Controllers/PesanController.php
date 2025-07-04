@@ -40,7 +40,7 @@ class PesanController extends Controller
             $user->waktu_pesan_terakhir = $pesanTerakhir ? $pesanTerakhir->created_at : null;
         }
 
-        return view('consultation', compact('users'));
+        return view('counselingList', compact('users'));
     }
 
     public function send(Request $request)
@@ -68,8 +68,8 @@ class PesanController extends Controller
         // Ambil konsultasi terbaru (jika ingin satu)
         $konsultasi = Consultation::where('id_user', auth()->user()->id_user)
             ->where('id_dokter', $userId)
-            ->orderBy('tanggal_konsultasi') // <- opsional, jika banyak data
-            ->first(); // <- eksekusi query dan ambil hasil
+            ->orderBy('tanggal_konsultasi')
+            ->first();
 
         // Ambil percakapan diurutkan berdasarkan waktu
         $pesans = Pesan::where(function ($q) use ($userId) {

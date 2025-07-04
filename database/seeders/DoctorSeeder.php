@@ -24,7 +24,7 @@ class DoctorSeeder extends Seeder
                 'specialization' => 'Clinical Psychologist',
                 'schedule' => 'Mon, Wed, Fri (09:00 - 15:00)',
                 'consultation_price' => 250000,
-                'photo' => 'doctors/doctor1.jpg', // path in public/storage/doctors
+                'foto_profil' => 'doctors/doctor1.jpg', // path in public/storage/doctors
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -36,7 +36,7 @@ class DoctorSeeder extends Seeder
                 'specialization' => 'Marriage & Family Counselor',
                 'schedule' => 'Tue, Thu (10:00 - 17:00)',
                 'consultation_price' => 300000,
-                'photo' => 'doctors/doctor2.jpg',
+                'foto_profil' => 'doctors/doctor2.jpg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -48,7 +48,7 @@ class DoctorSeeder extends Seeder
                 'specialization' => 'Child Development Specialist',
                 'schedule' => 'Weekend (10:00 - 14:00)',
                 'consultation_price' => 275000,
-                'photo' => 'doctors/doctor3.jpg',
+                'foto_profil' => 'doctors/doctor3.jpg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
