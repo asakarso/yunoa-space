@@ -32,6 +32,8 @@ class DatabaseSeeder extends Seeder
             ReviewSeeder::class,
             ArticleSeeder::class,
             JournalSeeder::class,
+            DoctorSeeder::class,
+
             PesanSeeder::class
         ]);
 

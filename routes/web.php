@@ -7,6 +7,7 @@ use App\Http\Controllers\JournalController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\CounselingController;
 use App\Http\Controllers\PesanController;
+use App\Http\Controllers\ConsultationController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/', function () {
@@ -39,7 +40,7 @@ Route::middleware(['auth', 'role:Operator'])->group(function () {
         return view('operator.dashboard');
     });
 });
-
+Route::get('/consultation', [ConsultationController::class, 'index'])->name('consultation');
 
 Route::middleware(['auth', 'role:Pengguna'])->group(function () {
     Route::get('/homepage', function () {
