@@ -18,6 +18,11 @@ return new class extends Migration
             $table->string('pass_user');
             $table->string('nomor_telepon', 20);
             $table->integer('total_konseling')->default(0);
+            $table->string('specialization')->nullable();
+            $table->string('schedule')->nullable();
+            $table->integer('consultation_price')->nullable();
+            $table->string('photo')->nullable(); // untuk path foto
+            $table->timestamps();
             // Tidak ada timestamps dan rememberToken sesuai permintaan
         });
 

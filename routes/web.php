@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\CounselingController;
+use App\Http\Controllers\ConsultationController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/', function () {
@@ -37,7 +38,7 @@ Route::middleware(['auth', 'role:Operator'])->group(function () {
         return view('operator.dashboard');
     });
 });
-
+Route::get('/consultation', [ConsultationController::class, 'index'])->name('consultation');
 Route::get('/counseling/payment/{doctor_id}', [CounselingController::class, 'showPayment'])->name('counseling.payment');
 Route::post('/counseling/payment/{doctor_id}', [CounselingController::class, 'processPayment'])->name('counseling.processPayment');
 
