@@ -87,8 +87,8 @@
     </style>
 </head>
 <body>
-
-    <div class="journal-container animate__animated animate__fadeInUp">
+    <x-navbar background="light"></x-navbar>
+    <div class="journal-container animate__animated animate__fadeInUp mt-5">
         <h2>My Journals</h2>
         <a href="{{ route('journals.create') }}" class="btn top-btn">+ New Journal</a>
         <div style="clear: both;"></div>

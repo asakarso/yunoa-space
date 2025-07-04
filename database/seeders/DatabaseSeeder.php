@@ -2,8 +2,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\User; // Import model User yang benar
-use Database\Seeders\UserSeeder; // Import UserSeeder
+use App\Models\User; 
+use Database\Seeders\UserSeeder;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserRoleSeeder;
 use Database\Seeders\AssessmentSeeder;
@@ -32,6 +32,8 @@ class DatabaseSeeder extends Seeder
             ReviewSeeder::class,
             ArticleSeeder::class,
             JournalSeeder::class,
+            DoctorSeeder::class,
+
             PesanSeeder::class
         ]);
 

@@ -139,7 +139,7 @@
             {{-- header --}}
             <div class="chat-header flex-row gap-3 align-items-center p-4">
                 <div class="flex gap-3">
-                    <a href="{{ route('consultation', auth()->user()->id_user) }}" class="text-dark">
+                    <a href="{{ route('counselingList', auth()->user()->id_user) }}" class="text-dark">
                         <i class="bi bi-arrow-left fs-2"></i>
                     </a>
                     <img src="{{ asset($dokter->foto_profil) }}" alt="Foto Profil" class="foto-profil">    

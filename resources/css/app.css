@@ -1,6 +1,6 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 @import "bootstrap/dist/css/bootstrap.min.css";
-@import 'bootstrap-icons/font/bootstrap-icons.css';
+@import "bootstrap-icons/font/bootstrap-icons.css";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -8,18 +8,19 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
 .colors-ijo {
-    color: #4Fcfb1;
+    color: #4fcfb1;
 }
 
 .colors-ijo-tua {
-    color: #0F5A4A;
+    color: #0f5a4a;
 }
 
 * {
@@ -35,7 +36,12 @@ a {
 body {
     font-family: Inter, sans-serif;
     color: #1e1e1e;
-    background: linear-gradient(to bottom, #4Fcfb1, rgba(79, 207, 177, 0), #ffffff);
+    background: linear-gradient(
+        to bottom,
+        #4fcfb1,
+        rgba(79, 207, 177, 0),
+        #ffffff
+    );
     background-size: 100% 90%;
     background-repeat: no-repeat;
 }
