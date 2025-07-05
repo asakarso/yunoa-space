@@ -15,8 +15,8 @@ class ReviewSeeder extends Seeder
 
         DB::table('reviews')->insert([
             [
-                'id_user' => 1,
-                'id_dokter' => 2,
+                'id_user' => 2,
+                'id_dokter' => 4,
                 'id_konsul' => 1,
                 'tanggal_review' => now()->toDateString(),
                 'waktu_review' => now()->toTimeString(),

@@ -20,7 +20,7 @@ return new class extends Migration
             // foreign key constraint
             $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');
 
-            $table->timestamps(); // optional, untuk created_at dan updated_at
+            // $table->timestamps(); // optional, huntuk created_at dan updated_at
         });
     }
 

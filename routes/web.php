@@ -3,8 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\JournalController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\CounselingController;
+use App\Http\Controllers\PesanController;
+use App\Http\Controllers\ConsultationController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/', function () {
@@ -37,9 +40,7 @@ Route::middleware(['auth', 'role:Operator'])->group(function () {
         return view('operator.dashboard');
     });
 });
-
-Route::get('/counseling/payment/{doctor_id}', [CounselingController::class, 'showPayment'])->name('counseling.payment');
-Route::post('/counseling/payment/{doctor_id}', [CounselingController::class, 'processPayment'])->name('counseling.processPayment');
+Route::get('/counseling/add', [ConsultationController::class, 'index'])->name('consultation');
 
 Route::middleware(['auth', 'role:Pengguna'])->group(function () {
     Route::get('/homepage', function () {
@@ -49,12 +50,23 @@ Route::middleware(['auth', 'role:Pengguna'])->group(function () {
     Route::get('/self-assessment', function () {
         return view('assessment');
     });
-
     Route::get('/self-assessment/test', [AssessmentController::class, 'showQuestion']);
-
     Route::post('/self-assessment/store-result', [AssessmentController::class, 'store']);
-
     Route::get('/self-assessment/result', [AssessmentController::class, 'showResult']);
+
+    Route::get('/counseling/payment/{doctor_id}', [CounselingController::class, 'showPayment'])->name('counseling.payment');
+    Route::post('/counseling/payment/{doctor_id}', [CounselingController::class, 'processPayment'])->name('counseling.processPayment');
+
+    Route::post('/chat/send', [PesanController::class, 'send'])->name('chat.send');
+    Route::get('/chat/{userId}', [PesanController::class, 'showChat'])->name('chat');
+
+    Route::get('/counseling/{userId}', [PesanController::class, 'showList'])->name('counselingList');
+
+    Route::resource('journals', JournalController::class)->parameters([
+        'journals' => 'id_jurnal'
+    ]) ;
 });
 
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::middleware(['auth'])->group(function () {
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+});

@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Doctor;
+use App\Models\User;
 use App\Models\Payment;
-use App\Models\Consultation;
 use Illuminate\Support\Facades\Auth;
 
 class CounselingController extends Controller
@@ -14,17 +13,13 @@ class CounselingController extends Controller
     {
         $user = Auth::user();
 
-        // Validasi: user harus sudah pernah konsultasi gratis (consultation dummy)
-        $hasConsulted = Consultation::where('user_id', $user->id)
-            ->where('is_free', true)
-            ->where('status', 'completed')
-            ->exists();
-
-        if (! $hasConsulted) {
-            return redirect('/homepage')->with('error', 'Kamu belum pernah melakukan konsultasi gratis.');
+        // Ganti: cek total_konseling di tabel users
+        if ($user->total_konseling < 1) {
+            return redirect('/')->with('error', 'Kamu belum pernah melakukan konsultasi gratis.');
         }
 
-        $doctor = Doctor::findOrFail($doctor_id);
+        // Ambil data dokter dari tabel users
+        $doctor = User::findOrFail($doctor_id);
 
         return view('counseling.payment', compact('doctor'));
     }
@@ -36,16 +31,19 @@ class CounselingController extends Controller
         ]);
 
         $user = Auth::user();
-        $doctor = Doctor::findOrFail($doctor_id);
+        $doctor = User::findOrFail($doctor_id);
 
         Payment::create([
-            'user_id' => $user->id,
-            'doctor_id' => $doctor->id,
-            'amount' => $doctor->price,
+            'user_id' => $user->id_user,           // sesuaikan dengan kolom di tabel kamu
+            'doctor_id' => $doctor->id_user,       // sesuaikan dengan kolom di tabel kamu
+            'amount' => $doctor->consultation_price,
             'method' => $request->method,
-            'status' => 'pending'
+            'status' => 'pending',
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
-        return redirect('/homepage')->with('success', 'Pembayaran berhasil disimpan.');
+        return redirect()->route('chat', $doctor_id)
+    ->with('success', 'Pembayaran berhasil disimpan.');
     }
 }
