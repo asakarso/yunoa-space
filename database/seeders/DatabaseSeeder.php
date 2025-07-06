@@ -23,26 +23,23 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            UserSeeder::class,
             RoleSeeder::class,
-            UserRoleSeeder::class,
+            UserSeeder::class,
+            // UserRoleSeeder::class,
             AssessmentSeeder::class,
             AssesmentQuestionSeeder::class,
             UserAnswerSeeder::class,
+            DoctorSeeder::class,
             ConsultationSeeder::class,
             ReviewSeeder::class,
             // CategorySeeder::class,
             ArticleSeeder::class,
             JournalSeeder::class,
-            DoctorSeeder::class,
+            
 
             PesanSeeder::class
         ]);
 
-            // Jalankan seeder untuk produk
-        //     $this->call([
-        //     ProdukSeeder::class,
-        // ]);
 
     }
 }

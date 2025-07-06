@@ -11,14 +11,14 @@ class ConsultationController extends Controller
     {
         $query = User::whereHas('roles', function($q) {
             $q->where('nama_role', 'dokter');
-        });
+        })
+        ->with('doctor');
 
         if ($request->has('search') && $request->search != '') {
             $query->where('nama_user', 'like', '%' . $request->search . '%');
         }
 
         $doctors = $query->get();
-
         return view('consultation', compact('doctors'));
     }
 }
