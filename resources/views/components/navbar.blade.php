@@ -15,7 +15,7 @@
 
     <div class="d-flex gap-5 align-items-center colors-ijo-tua">
         <a href="{{ url('/self-assessment')}}">Self-Assessment</a>
-        <a href="{{ route('counselingList', auth()->user()->id_user) }}">Consultation</a>
+        <a href="{{ route('counseling.list', auth()->user()->id_user) }}">Consultation</a>
         <a href="#">Education</a>
         <a href="{{ url('/journals')}}">Daily Gratitude</a>
         <a class="profile px-4" href="#" >Profile</a>

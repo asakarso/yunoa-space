@@ -139,7 +139,7 @@
             {{-- header --}}
             <div class="chat-header flex-row gap-3 align-items-center p-4">
                 <div class="flex gap-3">
-                    <a href="{{ route('counselingList', auth()->user()->id_user) }}" class="text-dark">
+                    <a href="{{ route('counseling.list', auth()->user()->id_user) }}" class="text-dark">
                         <i class="bi bi-arrow-left fs-2"></i>
                     </a>
                     <img src="{{ asset($dokter->foto_profil) }}" alt="Foto Profil" class="foto-profil">    
@@ -175,7 +175,7 @@
                     <form method="POST" action="{{ route('chat.send') }}">
                         @csrf
                         <input type="hidden" name="id_penerima" value="{{ $dokter->id_user }}">
-                        <input type="hidden" name="id_konsultasi" value="{{ $konsultasi->id_konsul }}">
+                        <input type="hidden" name="id_konsultasi" value="{{ $konsultasi?->id_konsul }}">
                         <div class="input-group">
                             <input type="text" name="pesan" class="form-control border-0" placeholder="Ketik pesan Anda di sini..." autocomplete="off" autofocus>
                             <button class="btn ms-3" type="submit" id="sendButton">

@@ -6,41 +6,62 @@ use App\Models\Consultation;
 use App\Models\Pesan;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // Pastikan Auth di-import
 
 class PesanController extends Controller
 {
+    /**
+     * Menampilkan daftar semua konsultasi pengguna.
+     * Logika ini sekarang berbasis status konsultasi, bukan riwayat pesan.
+     */
     public function showList($userId)
     {
-        // Ambil semua ID lawan bicara (pengirim/penerima) dari pesan-pesan user ini
-        $userIds = Pesan::where('id_pengirim', $userId)
-            ->pluck('id_penerima')
-            ->merge(
-                Pesan::where('id_penerima', $userId)->pluck('id_pengirim')
-            )
-            ->unique()
-            ->filter(fn($id) => $id != $userId)
-            ->values();
+        // Pastikan user yang login hanya bisa melihat list konsultasinya sendiri
+        if (Auth::id() != $userId) {
+            abort(403, 'Unauthorized action.');
+        }
+        
+        // 1. Ambil semua konsultasi yang sudah AKTIF (disetujui admin)
+        // Ini adalah konsultasi yang bisa di-chat oleh pengguna.
+        $activeConsultations = Consultation::where('id_user', $userId)
+                                       ->where('status', 'aktif')
+                                       ->with('doctor.profile') // Eager load info dokter dan profilnya jika ada
+                                       ->latest('id_konsul') // Urutkan berdasarkan yang terbaru
+                                       ->get();
 
-        $users = User::whereIn('id_user', $userIds)->get();
+        // 2. Ambil semua konsultasi yang masih PENDING
+        // Ini adalah konsultasi yang masih menunggu pembayaran atau verifikasi admin.
+        $pendingConsultations = Consultation::where('id_user', $userId)
+                                       ->whereIn('status', ['menunggu', 'menunggu verifikasi'])
+                                       ->with('doctor.profile')
+                                       ->latest('id_konsul')
+                                       ->get();
+        
+        // 3. (Opsional) Ambil konsultasi yang sudah SELESAI
+        $completedConsultations = Consultation::where('id_user', $userId)
+                                       ->where('status', 'selesai')
+                                       ->with('doctor.profile')
+                                       ->latest('id_konsul')
+                                       ->get();
 
-        // Tambahkan pesan terakhir ke masing-masing user
-        foreach ($users as $user) {
-            $pesanTerakhir = Pesan::where(function ($q) use ($userId, $user) {
-                $q->where('id_pengirim', $userId)
-                    ->where('id_penerima', $user->id_user);
-            })
-                ->orWhere(function ($q) use ($userId, $user) {
-                    $q->where('id_pengirim', $user->id_user)
-                        ->where('id_penerima', $userId);
-                })
-                ->orderByDesc('created_at')
-                ->first();
-
-            $user->pesan_terakhir = $pesanTerakhir ? $pesanTerakhir->pesan : null;
-            $user->waktu_pesan_terakhir = $pesanTerakhir ? $pesanTerakhir->created_at : null;
+        // Menggabungkan data pesan terakhir ke setiap konsultasi aktif
+        foreach ($activeConsultations as $consultation) {
+            $lastMessage = Pesan::where('id_konsultasi', $consultation->id_konsul)
+                                ->latest()
+                                ->first();
+            
+            // Tambahkan properti baru ke objek konsultasi
+            $consultation->last_message = $lastMessage ? $lastMessage->pesan : 'Klik untuk memulai percakapan...';
+            $consultation->last_message_time = $lastMessage ? $lastMessage->created_at : $consultation->updated_at;
         }
 
-        return view('counselingList', compact('users'));
+
+        // 4. Kirim semua data ke view
+        return view('counselingList', compact(
+            'activeConsultations', 
+            'pendingConsultations',
+            'completedConsultations'
+        ));
     }
 
     public function send(Request $request)
@@ -52,34 +73,30 @@ class PesanController extends Controller
         ]);
 
         Pesan::create([
-            'id_pengirim' => auth()->user()->id_user,
+            'id_pengirim' => auth()->id(),
             'id_penerima' => $request->id_penerima,
             'pesan' => $request->pesan,
             'id_konsultasi' => $request->id_konsultasi
         ]);
 
-        return redirect()->route('chat', $request->id_penerima)->with('success', 'Pesan berhasil dikirim.');
+        return back()->with('success', 'Pesan berhasil dikirim.');
     }
 
     public function showChat($userId)
     {
         $dokter = User::findOrFail($userId);
+        $currentUser = Auth::user();
 
-        // Ambil konsultasi terbaru (jika ingin satu)
-        $konsultasi = Consultation::where('id_user', auth()->user()->id_user)
+        // Ambil konsultasi yang AKTIF dan TERBARU dengan dokter ini
+        $konsultasi = Consultation::where('id_user', $currentUser->id_user)
             ->where('id_dokter', $userId)
-            ->orderBy('tanggal_konsultasi')
-            ->first();
+            ->where('status', 'aktif') // Pastikan hanya konsultasi aktif yang bisa di-chat
+            ->latest('id_konsul')
+            ->firstOrFail(); // Gagal jika tidak ada konsultasi aktif
 
-        // Ambil percakapan diurutkan berdasarkan waktu
-        $pesans = Pesan::where(function ($q) use ($userId) {
-            $q->where('id_pengirim', auth()->user()->id_user)
-                ->where('id_penerima', $userId);
-        })->orWhere(function ($q) use ($userId) {
-            $q->where('id_pengirim', $userId)
-                ->where('id_penerima', auth()->user()->id_user);
-        })
-            ->orderBy('created_at') // <- ini yang wajib untuk urutan chat
+        // Ambil percakapan yang terkait dengan konsultasi spesifik ini
+        $pesans = Pesan::where('id_konsultasi', $konsultasi->id_konsul)
+            ->orderBy('created_at')
             ->get();
 
         return view('chat', compact('pesans', 'konsultasi', 'dokter'));
