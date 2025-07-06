@@ -1,0 +1,167 @@
+:root {
+    --yunoa-green: #0f5a4a;
+    --yunoa-light-green: #eaf0ef;
+    --yunoa-button: #6bb99f;
+    --yunoa-border: #e0e0e0;
+}
+
+.search-bar-container .form-control {
+    border-radius: 2rem;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--yunoa-border);
+}
+
+.search-bar-container .form-control:focus {
+    border-color: var(--yunoa-button);
+    box-shadow: 0 0 0 0.2rem rgba(107, 185, 159, 0.25);
+}
+
+.btn-search {
+    background-color: #E91E63; /* Warna pink dari contoh */
+    color: white;
+    border-radius: 2rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: bold;
+}
+.btn-search:hover {
+    background-color: #c2185b;
+}
+
+.topic-tag {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--yunoa-border);
+    border-radius: 1.5rem;
+    margin-right: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.topic-tag:hover, .topic-tag.active {
+    background-color: var(--yunoa-light-green);
+    border-color: var(--yunoa-button);
+    color: var(--yunoa-green);
+    font-weight: 500;
+}
+
+.main-article-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.main-article-card img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    object-position: top;     /*Untuk memotong bagian bawah dan fokus atas  */
+}
+
+.main-article-card .card-body {
+    padding: 1.5rem;
+}
+
+.side-article-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: inherit;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.side-article-item:last-child {
+    border-bottom: none;
+}
+
+.side-article-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+
+/* ... (CSS yang sudah ada sebelumnya) ... */
+
+.latest-article-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    background-color: white;
+    height: 100%;
+    transition: transform 0.2s ease-in-out;
+}
+
+.latest-article-card:hover {
+    transform: translateY(-5px);
+}
+
+.latest-article-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.latest-article-card .card-body {
+    padding: 1.5rem;
+}
+
+.latest-article-card .card-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    /* Membatasi judul menjadi 2 baris */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+    min-height: 2.5em; /* Pastikan ruang cukup untuk 2 baris */
+}
+
+.latest-article-card .card-text {
+    color: #6c757d;
+    /* Membatasi deskripsi menjadi 3 baris */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+
+/* Wadah utama untuk halaman artikel */
+.article-page-container {
+    background-color: white;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    margin-top: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+/* Ikon social media */
+.social-share-icons {
+    position: sticky;
+    top: 120px; /* Jarak dari atas */
+    text-align: center;
+}
+
+.social-share-icons a {
+    display: block;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #6c757d;
+    transition: color 0.2s ease;
+}
+
+.social-share-icons a:hover {
+    color: var(--yunoa-green);
+}
+
+/* Menyamakan ukuran font di sidebar */
+.side-article-item p {
+    font-size: 0.95rem;
+}
