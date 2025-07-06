@@ -48,12 +48,10 @@ Route::middleware(['auth', 'role:Pengguna'])->group(function () {
         return view('homepage');
     });
 
-    Route::get('/self-assessment', function () {
-        return view('assessment');
-    });
+    Route::get('/self-assessment',  [AssessmentController::class, 'assessmentAttempt']);
     Route::get('/self-assessment/test', [AssessmentController::class, 'showQuestion']);
     Route::post('/self-assessment/store-result', [AssessmentController::class, 'store']);
-    Route::get('/self-assessment/result', [AssessmentController::class, 'showResult']);
+    Route::get('/self-assessment/result', [AssessmentController::class, 'showResult'])->name('result');
 
     Route::get('/counseling/payment/{doctor_id}', [CounselingController::class, 'showPayment'])->name('counseling.payment');
     Route::post('/counseling/payment/{doctor_id}', [CounselingController::class, 'processPayment'])->name('counseling.processPayment');

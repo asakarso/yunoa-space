@@ -103,7 +103,7 @@
                 <div class="consultation-list">
                     @forelse ($users as $user)
                         <a href="{{ route('chat', $user->id_user) }}" class="consultation-item">
-                            <img src="{{ asset($user->foto_profil) }}" alt="Foto Profil">
+                            <img src="{{ asset('storage/' . $user->foto_profil) }}" alt="Foto Profil">
                             <div class="w-100">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0 fw-bold">{{ $user->nama_user }}</h5>

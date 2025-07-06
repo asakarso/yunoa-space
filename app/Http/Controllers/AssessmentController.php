@@ -4,13 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\AssesmentQuestion;
+use App\Models\Consultation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AssessmentController extends Controller
 {
-    public function showQuestion(){
+    public function assessmentAttempt()
+    {
+        $userId = Auth::user()->id_user;
+        $konsultasi = Consultation::where('id_user', $userId)->get();
+
+        if ($konsultasi->count() > 0) {
+            return redirect()->route('result');
+        } else {
+            return view('assessment');
+        }
+    }
+
+    public function showQuestion()
+    {
         $pertanyaan = AssesmentQuestion::pluck('pertanyaan')->toArray();
         return view('test', compact('pertanyaan'));
     }
@@ -35,7 +49,7 @@ class AssessmentController extends Controller
             'skor_hasil' => $validated['skor'],
         ]);
 
-        foreach($validated['jawaban'] as $index => $userChoice){
+        foreach ($validated['jawaban'] as $index => $userChoice) {
             DB::table('user_answers')->insert([
                 'id_assess' => $assessmentId,
                 'id_question' => $index + 1,
@@ -44,7 +58,7 @@ class AssessmentController extends Controller
         }
 
         session()->flash('assessment_score', $validated['skor']);
-        session()->flash('assessment_id_result', $assessmentId); 
+        session()->flash('assessment_id_result', $assessmentId);
 
         $redirectUrl = url('self-assessment/result');
 
@@ -52,7 +66,7 @@ class AssessmentController extends Controller
             'message' => 'Assessment berhasil disimpan.',
             'score' => $validated['skor'],
             'assessment_id' => $assessmentId,
-            'redirect_url' => $redirectUrl 
+            'redirect_url' => $redirectUrl
         ]);
     }
 
@@ -63,13 +77,13 @@ class AssessmentController extends Controller
         $userId = Auth::id();
 
         $totalAttempts = 0;
-        $latestScore = null; 
-        $scoreToDisplay = null; 
+        $latestScore = null;
+        $scoreToDisplay = null;
 
         if ($userId) {
             $totalAttempts = DB::table('assessments')->where('id_user', $userId)->count();
 
-            $lastAssessmentFromDb = DB::table('assessments')->where('id_user', $userId)->orderBy('tanggal_assess', 'desc') ->orderBy('id_assess', 'desc')->first();
+            $lastAssessmentFromDb = DB::table('assessments')->where('id_user', $userId)->orderBy('tanggal_assess', 'desc')->orderBy('id_assess', 'desc')->first();
 
             if ($lastAssessmentFromDb) {
                 $latestScoreFromDb = $lastAssessmentFromDb->skor_hasil;
@@ -80,16 +94,16 @@ class AssessmentController extends Controller
             } elseif ($lastAssessmentFromDb) {
                 $scoreToDisplay = $latestScoreFromDb;
             } else {
-                return redirect()->url('self-assessment')  ->with('error', 'Tidak ada hasil assessment yang dapat ditampilkan.');
+                return redirect()->url('self-assessment')->with('error', 'Tidak ada hasil assessment yang dapat ditampilkan.');
             }
         } else {
             return redirect()->route('login')->with('error', 'Anda harus login untuk melihat hasil assessment.');
         }
 
-        return view('result', [ 
-            'score' => $scoreToDisplay, 
-            'totalAttempts' => $totalAttempts,   
-            'latestScoreFromDb' => $latestScore, 
+        return view('result', [
+            'score' => $scoreToDisplay,
+            'totalAttempts' => $totalAttempts,
+            'latestScoreFromDb' => $latestScore,
         ]);
     }
 }

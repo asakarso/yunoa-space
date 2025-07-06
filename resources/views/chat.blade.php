@@ -142,7 +142,7 @@
                     <a href="{{ route('counselingList', auth()->user()->id_user) }}" class="text-dark">
                         <i class="bi bi-arrow-left fs-2"></i>
                     </a>
-                    <img src="{{ asset($dokter->foto_profil) }}" alt="Foto Profil" class="foto-profil">    
+                    <img src="{{ asset('storage/' . $dokter->foto_profil) }}" alt="Foto Profil" class="foto-profil">    
                 </div>
                 <div>
                     <h4 class="fw-bold">{{ $dokter->nama_user }}</h4>
