@@ -15,6 +15,7 @@ use Database\Seeders\ConsultationSeeder;
 use Database\Seeders\ReviewSeeder;
 use Database\Seeders\ArticleSeeder;
 use Database\Seeders\JournalSeeder;
+// use Database\Seeders\CategorySeeder;
 
 
 class DatabaseSeeder extends Seeder
@@ -30,6 +31,7 @@ class DatabaseSeeder extends Seeder
             UserAnswerSeeder::class,
             ConsultationSeeder::class,
             ReviewSeeder::class,
+            // CategorySeeder::class,
             ArticleSeeder::class,
             JournalSeeder::class,
             DoctorSeeder::class,

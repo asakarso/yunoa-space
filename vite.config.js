@@ -11,6 +11,7 @@ export default defineConfig({
                 "resources/css/landingpage.css",
                 "resources/css/consultation.css",
                 "resources/css/components/navbar.css",
+                "resources/css/articles.css",
             ],
             refresh: true,
         }),

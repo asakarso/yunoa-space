@@ -8,6 +8,7 @@ use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\CounselingController;
 use App\Http\Controllers\PesanController;
 use App\Http\Controllers\ConsultationController;
+use App\Http\Controllers\ArticleController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/', function () {
@@ -65,8 +66,12 @@ Route::middleware(['auth', 'role:Pengguna'])->group(function () {
     Route::resource('journals', JournalController::class)->parameters([
         'journals' => 'id_jurnal'
     ]) ;
+    
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/articles/all', [ArticleController::class, 'all'])->name('articles.all');
+    Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
+    Route::get('/articles/{id}', [ArticleController::class, 'show'])->name('articles.show');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
