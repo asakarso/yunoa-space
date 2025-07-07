@@ -3,69 +3,101 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Role;
 
 class DoctorSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
-        // Sample data for doctors
+        $roleDokter = Role::where('nama_role', 'dokter')->firstOrFail();
+
         $doctorsData = [
             [
-                'nama_user' => 'Dr. Anisa Putri',
-                'email_user' => 'anisa.putri@example.com',
-                'pass_user' => Hash::make('password123'),
-                'nomor_telepon' => '081234567890',
-                'specialization' => 'Clinical Psychologist',
-                'schedule' => 'Mon, Wed, Fri (09:00 - 15:00)',
-                'consultation_price' => 250000,
-                'foto_profil' => 'doctors/doctor1.jpg', // path in public/storage/doctors
-                'created_at' => now(),
-                'updated_at' => now(),
+                'user' => [
+                    'nama_user' => 'Dr. Anisa Putri',
+                    'email_user' => 'anisa.putri@example.com',
+                    'pass_user' => Hash::make('password123'),
+                    'nomor_telepon' => '081234567890',
+                    'foto_profil' => 'doctors/doctor1.jpg',
+                ],
+                'doctor_profile' => [
+                    'specialization' => 'Clinical Psychologist',
+                    'schedule' => 'Mon, Wed, Fri (09:00 - 15:00)',
+                    'consultation_price' => 250000,
+                ]
             ],
             [
-                'nama_user' => 'Dr. Budi Santoso',
-                'email_user' => 'budi.santoso@example.com',
-                'pass_user' => Hash::make('password123'),
-                'nomor_telepon' => '081234567891',
-                'specialization' => 'Marriage & Family Counselor',
-                'schedule' => 'Tue, Thu (10:00 - 17:00)',
-                'consultation_price' => 300000,
-                'foto_profil' => 'doctors/doctor2.jpg',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'user' => [
+                    'nama_user' => 'Dr. Budi Santoso',
+                    'email_user' => 'budi.santoso@example.com',
+                    'pass_user' => Hash::make('password123'),
+                    'nomor_telepon' => '081234567891',
+                    'foto_profil' => 'doctors/doctor2.jpg',
+                ],
+                'doctor_profile' => [
+                    'specialization' => 'Marriage & Family Counselor',
+                    'schedule' => 'Tue, Thu (10:00 - 17:00)',
+                    'consultation_price' => 300000,
+                ]
             ],
             [
-                'nama_user' => 'Dr. Citra Lestari',
-                'email_user' => 'citra.lestari@example.com',
-                'pass_user' => Hash::make('password123'),
-                'nomor_telepon' => '081234567892',
-                'specialization' => 'Child Development Specialist',
-                'schedule' => 'Weekend (10:00 - 14:00)',
-                'consultation_price' => 275000,
-                'foto_profil' => 'doctors/doctor3.jpg',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'user' => [
+                    'nama_user' => 'Dr. Citra Lestari',
+                    'email_user' => 'citra.lestari@example.com',
+                    'pass_user' => Hash::make('password123'),
+                    'nomor_telepon' => '081234567892',
+                    'foto_profil' => 'doctors/doctor3.jpg',
+                ],
+                'doctor_profile' => [
+                    'specialization' => 'Child Development Specialist',
+                    'schedule' => 'Weekend (10:00 - 14:00)',
+                    'consultation_price' => 275000,
+                ]
+            ],
+            [
+                'user' => [
+                    'nama_user' => 'Wati Ningsih, S.Psi., M.Psi.',
+                    'email_user' => 'wati@example.com',
+                    'pass_user' => Hash::make('secret456'),
+                    'nomor_telepon' => '089876543210',
+                    'foto_profil' => 'foto_profil/4.jpg',
+                    'total_konseling' => 6, 
+                ],
+                'doctor_profile' => [
+                    'specialization' => 'Child Development Specialist',
+                    'schedule' => 'Mon, Wed, Fri (09:00 - 15:00)',
+                    'consultation_price' => 250000,
+                ]
+            ],
+            [
+                'user' => [
+                    'nama_user' => 'Antonio Putra, S.Psi., M.Psi.',
+                    'email_user' => 'anton@example.com',
+                    'pass_user' => Hash::make('secret456'),
+                    'nomor_telepon' => '089876777210',
+                    'foto_profil' => 'foto_profil/5.jpg',
+                    'total_konseling' => 6,
+                ],
+                'doctor_profile' => [
+                    'specialization' => 'Child Development Specialist',
+                    'schedule' => 'Mon, Wed, Fri (09:00 - 15:00)',
+                    'consultation_price' => 350000,
+                ]
             ],
         ];
 
-        // Get the id for the 'dokter' role
-        $roleDokterId = DB::table('roles')->where('nama_role', 'dokter')->first()->id_role;
 
-        foreach ($doctorsData as $doctor) {
-            // Create the user
-            $user = User::create($doctor);
+        foreach ($doctorsData as $data) {
+            // Buat user terlebih dahulu
+            $user = User::create($data['user']);
             
-            // Assign the 'dokter' role to the user
-            DB::table('user_roles')->insert([
-                'id_user' => $user->id_user,
-                'id_role' => $roleDokterId,
-            ]);
+            // Buat profil dokter menggunakan relasi
+            $user->doctor()->create($data['doctor_profile']);
+            
+            $user->roles()->attach($roleDokter->id_role);
         }
     }
 }

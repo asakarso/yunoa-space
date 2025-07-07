@@ -8,14 +8,12 @@ use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\CounselingController;
 use App\Http\Controllers\PesanController;
 use App\Http\Controllers\ConsultationController;
-use App\Http\Controllers\Operator\ArticleController;
+use App\Http\Controllers\ArticleController; // untuk publik
+use App\Http\Controllers\Operator\ArticleController as OperatorArticleController;
 use App\Http\Controllers\Operator\DashboardController;
 use App\Http\Controllers\Operator\ArticlePreviewController;
 
-
-
 // GUEST ROUTES 
-
 Route::middleware('guest')->group(function () {
     Route::get('/', fn() => view('landingpage'));
 
@@ -28,40 +26,28 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [RegisterController::class, 'register']);
 });
 
-
-
 // ADMIN ROUTES
-
 Route::middleware(['auth', 'role:Admin'])->group(function () {
     Route::view('/admin/dashboard', 'admin.dashboard')->name('admin.dashboard');
 });
 
-
-
 // DOKTER ROUTES
-
 Route::middleware(['auth', 'role:Dokter'])->group(function () {
     Route::view('/dokter/dashboard', 'dokter.dashboard')->name('dokter.dashboard');
 });
 
-
-
 // OPERATOR ROUTES
-
 Route::middleware(['auth', 'role:Operator'])->group(function () {
     Route::get('/operator/dashboard', [DashboardController::class, 'index'])->name('operator.dashboard');
 
-    // Resource untuk CRUD artikel
-    Route::resource('/operator/articles', ArticleController::class)->names('operator.articles');
+    // CRUD artikel
+    Route::resource('/operator/articles', OperatorArticleController::class)->names('operator.articles');
 
-    //  route preview hanya untuk operator
+    // Preview artikel
     Route::get('/operator/articles/{id}/preview', [ArticlePreviewController::class, 'show'])->name('operator.articles.preview');
-
 });
 
-
 // PENGGUNA ROUTES
-
 Route::middleware(['auth', 'role:Pengguna'])->group(function () {
     Route::view('/homepage', 'homepage')->name('homepage');
     Route::view('/self-assessment', 'assessment')->name('assessment');
@@ -87,7 +73,12 @@ Route::middleware(['auth', 'role:Pengguna'])->group(function () {
     ]);
 });
 
+// ROUTE ARTIKEL PUBLIK (boleh dilihat semua pengguna login)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/articles/all', [ArticleController::class, 'all'])->name('articles.all');
+    Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
+    Route::get('/articles/{id}', [ArticleController::class, 'show'])->name('articles.show');
 
-// LOGOUT ROUTE
-
-Route::middleware('auth')->post('/logout', [LoginController::class, 'logout'])->name('logout');
+    // Logout
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+});

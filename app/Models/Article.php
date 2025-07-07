@@ -9,13 +9,10 @@ class Article extends Model
 {
     use HasFactory;
 
-    protected $table = 'articles'; // Nama tabel
-
-    protected $primaryKey = 'id_review'; // Primary key khusus
-
-    public $incrementing = true; // Karena pakai increments di migration
-
-    protected $keyType = 'int'; // Tipe data PK
+    protected $table = 'articles';
+    protected $primaryKey = 'id_review';
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     protected $fillable = [
         'judul_artikel',
@@ -27,9 +24,13 @@ class Article extends Model
         'status',
     ];
 
-    // Jika ingin relasi ke model User (jika sudah ada)
     public function operator()
     {
         return $this->belongsTo(User::class, 'operator_id', 'id_user');
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'article_category', 'article_id', 'category_id');
     }
 }

@@ -15,6 +15,7 @@ use Database\Seeders\ConsultationSeeder;
 use Database\Seeders\ReviewSeeder;
 use Database\Seeders\ArticleSeeder;
 use Database\Seeders\JournalSeeder;
+// use Database\Seeders\CategorySeeder;
 
 
 class DatabaseSeeder extends Seeder
@@ -22,25 +23,23 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            UserSeeder::class,
             RoleSeeder::class,
-            UserRoleSeeder::class,
+            UserSeeder::class,
+            // UserRoleSeeder::class,
             AssessmentSeeder::class,
             AssesmentQuestionSeeder::class,
             UserAnswerSeeder::class,
+            DoctorSeeder::class,
             ConsultationSeeder::class,
             ReviewSeeder::class,
+            // CategorySeeder::class,
             ArticleSeeder::class,
             JournalSeeder::class,
-            DoctorSeeder::class,
+            
 
             PesanSeeder::class
         ]);
 
-            // Jalankan seeder untuk produk
-        //     $this->call([
-        //     ProdukSeeder::class,
-        // ]);
 
     }
 }

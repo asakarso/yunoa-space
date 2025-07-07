@@ -1,72 +1,5 @@
 <?php
 
-// namespace App\Models;
-
-// // use Illuminate\Contracts\Auth\MustVerifyEmail;
-// use Illuminate\Database\Eloquent\Factories\HasFactory;
-// use Illuminate\Foundation\Auth\User as Authenticatable;
-// use Illuminate\Notifications\Notifiable;
-
-// class User extends Authenticatable
-// {
-//     /** @use HasFactory<\Database\Factories\UserFactory> */
-//     use HasFactory, Notifiable;
-
-//     /**
-//      * The attributes that are mass assignable.
-//      *
-//      * @var list<string>
-//      */
-//     protected $fillable = [
-//         'name',
-//         'email',
-//         'password',
-//         'role_id', // Relasi ke table roles
-//         'verified', // Untuk dokter
-//     ];
-
-//     /**
-//      * The attributes that should be hidden for serialization.
-//      *
-//      * @var list<string>
-//      */
-//     protected $hidden = [
-//         'password',
-//         'remember_token',
-//     ];
-
-//     /**
-//      * Get the attributes that should be cast.
-//      *
-//      * @return array<string, string>
-//      */
-//     protected function casts(): array
-//     {
-//         return [
-//             'email_verified_at' => 'datetime',
-//             'password' => 'hashed',
-//             'verified' => 'boolean', // Untuk dokter
-//         ];
-//     }
-
-//     public function role()
-//     {
-//         return $this->belongsTo(Role::class);
-//     }
-
-//     public function dokterProfile()
-//     {
-//         return $this->hasOne(DokterProfile::class);
-//     }
-
-//     public function operatorProfile()
-//     {
-//         return $this->hasOne(OperatorProfile::class);
-//     }
-
-
-// }
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -86,7 +19,7 @@ class User extends Authenticatable
         'pass_user',
         'nomor_telepon',
         'total_konseling',
-        'foto_profil'
+        'foto_profil',
     ];
 
     protected $hidden = [
@@ -94,7 +27,7 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'total_konseling' => 'integer',
+        'email_verified_at' => 'datetime', 
     ];
 
     public function getAuthPassword()
@@ -102,8 +35,20 @@ class User extends Authenticatable
         return $this->pass_user;
     }
 
+    /**
+     * Mendefinisikan relasi Many-to-Many ke Role.
+     */
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'user_roles', 'id_user', 'id_role');
+    }
+
+    /**
+     * Mendapatkan profil dokter yang terhubung dengan user ini.
+     * relasi One-to-One (hasOne).
+     */
+    public function doctor()
+    {
+        return $this->hasOne(Doctor::class, 'user_id', 'id_user');
     }
 }
