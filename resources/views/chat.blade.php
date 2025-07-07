@@ -139,7 +139,7 @@
             {{-- header --}}
             <div class="chat-header flex-row gap-3 align-items-center p-4">
                 <div class="flex gap-3">
-                    <a href="{{ route('counselingList', auth()->user()->id_user) }}" class="text-dark">
+                    <a href="{{ route('counselingList', $dokter->id_user) }}" class="text-dark">
                         <i class="bi bi-arrow-left fs-2"></i>
                     </a>
                     <img src="{{ asset('storage/' . $dokter->foto_profil) }}" alt="Foto Profil" class="foto-profil">    
@@ -150,7 +150,7 @@
                 </div>
             </div>
 
-            {{-- Jendela Chat (Pesan + Input) --}}
+            {{-- Jendela Chat --}}
             <div class="chat-window">
                 {{-- Area Tampilan Pesan --}}
                 <div id="chat-messages-container" class="chat-messages bg-secondary-subtle">
@@ -168,10 +168,23 @@
                         @endif
                     @endforeach
                 </div>
-
-                {{-- Area Input Pesan --}}
+                @if ($konsultasi->status == 'selesai')
+                <div class="text-center p-3 rounded-lg" >
+                    <h4 class="mt-3 fw-bold">Consultation has ended</h4>
+                    
+                    {{-- Tombol  review --}}
+                    <a href="{{ route('review', $konsultasi->id_konsul) }}" class="btn btn-yunoa-green mt-3">
+                        <i class="bi bi-star-fill me-2"></i>
+                        @if ($konsultasi->review)
+                            See Your Feedback
+                        @else
+                            Give Feedback
+                        @endif
+                    </a>
+                </div>
+                @else
+                {{-- Input Pesan --}}
                 <div class="chat-input">
-                    {{-- Ganti 'chat.send' jika nama route Anda berbeda --}}
                     <form method="POST" action="{{ route('chat.send') }}">
                         @csrf
                         <input type="hidden" name="id_penerima" value="{{ $dokter->id_user }}">
@@ -184,6 +197,7 @@
                         </div>
                     </form>
                 </div>
+                @endif
             </div>
         </div>
     </main>

@@ -13,15 +13,12 @@
             --yunoa-green: #6BB99F;
             --yunoa-light-green: #e6f3ef;
         }
-
         body {
             background-color: #f8f9fa;
         }
-
         main { 
             min-height: calc(100vh - 120px);
         }
-        
         .consultation-list-container {
             background-color: white;
             border-radius: 16px;
@@ -31,7 +28,6 @@
             max-width: 900px;
             margin: auto;
         }
-
         .list-header {
             padding-bottom: 1.5rem;
             border-bottom: 1px solid #e9ecef;
@@ -40,7 +36,6 @@
         .list-header h2 .colors-ijo-tua {
             color: var(--yunoa-green);
         }
-
         .consultation-item {
             display: flex;
             align-items: center;
@@ -51,22 +46,24 @@
             color: inherit;
             border: 1px solid #e9ecef;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            gap: 8px;
+            gap: 1rem;
         }
         .consultation-item:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 15px rgba(0,0,0,0.1);
             border-color: var(--yunoa-green);
         }
+        .consultation-item.is-finished {
+            opacity: 0.75;
+            background-color: #f8f9fa;
+        }
         .consultation-item img {
             width: 60px; 
             height: 60px;
             object-fit: cover;
-            width: 60px; 
             border-radius: 50%;
             flex-shrink: 0; 
         }
-
         .empty-state {
             padding: 4rem 2rem;
             border: 2px dashed #e0e0e0;
@@ -86,13 +83,10 @@
         <div class="container">
             <div class="consultation-list-container shadow-lg">
                 <div class="list-header d-flex justify-content-between align-items-center flex-wrap">
-                    {{-- Grup Judul (di kiri) --}}
                     <div>
                         <h2 class="fw-bold mb-1">Daftar <span class="colors-ijo-tua">Konsultasi</span> Anda</h2>
                         <p class="text-muted mb-0">Pilih percakapan untuk melihat atau melanjutkan konsultasi.</p>
                     </div>
-
-                    {{-- Tombol Tambah (di kanan) --}}
                     <div>
                         <a href="{{ route('consultation') }}" class="btn btn-yunoa-primary">
                             <i class="bi bi-plus-circle me-2"></i>Tambah Konsultasi
@@ -101,20 +95,41 @@
                 </div>
 
                 <div class="consultation-list">
-                    @forelse ($users as $user)
-                        <a href="{{ route('chat', $user->id_user) }}" class="consultation-item">
-                            <img src="{{ asset('storage/' . $user->foto_profil) }}" alt="Foto Profil">
+                    @forelse ($konsultasi_list as $konsultasi)
+                        @php
+                            // Tentukan siapa lawan bicara
+                            $lawanBicara = $konsultasi->id_user == auth()->id() ? $konsultasi->dokter : $konsultasi->user;
+                        @endphp
+                        
+                        <a href="{{ route('chat', $konsultasi->id_konsul) }}" class="consultation-item {{ $konsultasi->status == 'selesai' ? 'is-finished' : '' }}">
+                            <img src="{{ asset('storage/' . $lawanBicara->foto_profil) }}" alt="Foto Profil">
                             <div class="w-100">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0 fw-bold">{{ $user->nama_user }}</h5>
+                                    <h5 class="mb-0 fw-bold">{{ $lawanBicara->nama_user }}</h5>
                                     
-                                    @if($user->waktu_pesan_terakhir)
-                                        <small class="text-muted fw-light">{{ $user->waktu_pesan_terakhir->diffForHumans() }}</small>
+                                    @if($konsultasi->pesan_terakhir?->created_at)
+                                        <small class="text-muted fw-light">{{ $konsultasi->pesan_terakhir->created_at->diffForHumans() }}</small>
                                     @endif
                                 </div>
-                                <p class="mb-0 text-muted mt-1 text-truncate">
-                                    {{ $user->pesan_terakhir }}
-                                </p>
+                                
+                                <div class="d-flex justify-content-between align-items-center mt-1">
+                                    <p class="mb-0 text-muted text-truncate" style="max-width: 80%;">
+                                        {{-- Tampilkan siapa yang mengirim pesan terakhir --}}
+                                        @if($konsultasi->pesan_terakhir)
+                                            @if($konsultasi->pesan_terakhir->id_pengirim == auth()->id())
+                                                <span class="fw-bold">Anda:</span> 
+                                            @endif
+                                            {{ $konsultasi->pesan_terakhir->pesan }}
+                                        @else
+                                            Belum ada pesan.
+                                        @endif
+                                    </p>
+                                    @if($konsultasi->status == 'selesai')
+                                        <span class="badge rounded-pill bg-secondary fw-normal">
+                                            <i class="bi bi-check-circle-fill me-1"></i>Selesai
+                                        </span>
+                                    @endif
+                                </div>
                             </div>
                         </a>
                     @empty

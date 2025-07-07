@@ -11,36 +11,21 @@ class PesanController extends Controller
 {
     public function showList($userId)
     {
-        // Ambil semua ID lawan bicara (pengirim/penerima) dari pesan-pesan user ini
-        $userIds = Pesan::where('id_pengirim', $userId)
-            ->pluck('id_penerima')
-            ->merge(
-                Pesan::where('id_penerima', $userId)->pluck('id_pengirim')
-            )
-            ->unique()
-            ->filter(fn($id) => $id != $userId)
-            ->values();
+        $konsultasi_list = Consultation::where('id_user', $userId)
+            ->orWhere('id_dokter', $userId)
+            ->with('dokter', 'user') 
+            ->orderByDesc('updated_at') 
+            ->get();
 
-        $users = User::whereIn('id_user', $userIds)->get();
-
-        // Tambahkan pesan terakhir ke masing-masing user
-        foreach ($users as $user) {
-            $pesanTerakhir = Pesan::where(function ($q) use ($userId, $user) {
-                $q->where('id_pengirim', $userId)
-                    ->where('id_penerima', $user->id_user);
-            })
-                ->orWhere(function ($q) use ($userId, $user) {
-                    $q->where('id_pengirim', $user->id_user)
-                        ->where('id_penerima', $userId);
-                })
+        foreach ($konsultasi_list as $konsultasi) {
+            $pesanTerakhir = Pesan::where('id_konsultasi', $konsultasi->id_konsul)
                 ->orderByDesc('created_at')
                 ->first();
 
-            $user->pesan_terakhir = $pesanTerakhir ? $pesanTerakhir->pesan : null;
-            $user->waktu_pesan_terakhir = $pesanTerakhir ? $pesanTerakhir->created_at : null;
+            $konsultasi->pesan_terakhir = $pesanTerakhir;
         }
 
-        return view('counselingList', compact('users'));
+        return view('counselingList', compact('konsultasi_list'));
     }
 
     public function send(Request $request)
@@ -61,25 +46,16 @@ class PesanController extends Controller
         return redirect()->route('chat', $request->id_penerima)->with('success', 'Pesan berhasil dikirim.');
     }
 
-    public function showChat($userId)
+    public function showChat($consultId)
     {
-        $dokter = User::findOrFail($userId);
+        $konsultasi = Consultation::findOrFail($consultId);
+        $dokter = User::findOrFail($konsultasi->id_dokter);
 
-        // Ambil konsultasi terbaru (jika ingin satu)
-        $konsultasi = Consultation::where('id_user', auth()->user()->id_user)
-            ->where('id_dokter', $userId)
-            ->orderBy('tanggal_konsultasi')
-            ->first();
+        $user = auth()->user()->id_user;
 
-        // Ambil percakapan diurutkan berdasarkan waktu
-        $pesans = Pesan::where(function ($q) use ($userId) {
-            $q->where('id_pengirim', auth()->user()->id_user)
-                ->where('id_penerima', $userId);
-        })->orWhere(function ($q) use ($userId) {
-            $q->where('id_pengirim', $userId)
-                ->where('id_penerima', auth()->user()->id_user);
-        })
-            ->orderBy('created_at') // <- ini yang wajib untuk urutan chat
+        $pesans = Pesan::whereIn('id_pengirim', [$user, $konsultasi->id_dokter])
+            ->whereIn('id_penerima', [$user, $konsultasi->id_dokter])
+            ->orderBy('created_at')
             ->get();
 
         return view('chat', compact('pesans', 'konsultasi', 'dokter'));
