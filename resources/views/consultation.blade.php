@@ -48,7 +48,7 @@
                                     <span>Rp{{ number_format($doctor->doctor->consultation_price ?? 0, 0, ',', '.') }} / session</span>
                                 </div>
 
-                                <a href="{{ route('counseling.processPayment', ['doctor_id' => $doctor->id_user]) }}" class="btn btn-primary-yunoa w-100">Start Consultation</a>
+                                <a href="{{ route('counseling.payment', ['doctor_id' => $doctor->id_user]) }}" class="btn btn-primary-yunoa w-100">Start Consultation</a>
                             </div>
                         </div>
                     </div>

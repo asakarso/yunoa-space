@@ -8,15 +8,19 @@ use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\CounselingController;
 use App\Http\Controllers\PesanController;
 use App\Http\Controllers\ConsultationController;
-use App\Http\Controllers\ArticleController; // untuk publik
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\Operator\ArticleController as OperatorArticleController;
 use App\Http\Controllers\Operator\DashboardController;
 use App\Http\Controllers\Operator\ArticlePreviewController;
+use App\Http\Controllers\MidtransCallbackController;
 
-// GUEST ROUTES 
+// === CALLBACK MIDTRANS (TIDAK PERLU LOGIN) ===
+Route::post('/midtrans/callback', [MidtransCallbackController::class, 'callback'])->name('midtrans.callback');
+
+// === GUEST ROUTES ===
 Route::middleware('guest')->group(function () {
     Route::get('/', fn() => view('landingpage'));
-
+    
     // Login
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
@@ -26,17 +30,17 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [RegisterController::class, 'register']);
 });
 
-// ADMIN ROUTES
+// === ADMIN ROUTES ===
 Route::middleware(['auth', 'role:Admin'])->group(function () {
     Route::view('/admin/dashboard', 'admin.dashboard')->name('admin.dashboard');
 });
 
-// DOKTER ROUTES
+// === DOKTER ROUTES ===
 Route::middleware(['auth', 'role:Dokter'])->group(function () {
     Route::view('/dokter/dashboard', 'dokter.dashboard')->name('dokter.dashboard');
 });
 
-// OPERATOR ROUTES
+// === OPERATOR ROUTES ===
 Route::middleware(['auth', 'role:Operator'])->group(function () {
     Route::get('/operator/dashboard', [DashboardController::class, 'index'])->name('operator.dashboard');
 
@@ -47,41 +51,41 @@ Route::middleware(['auth', 'role:Operator'])->group(function () {
     Route::get('/operator/articles/{id}/preview', [ArticlePreviewController::class, 'show'])->name('operator.articles.preview');
 });
 
-// PENGGUNA ROUTES
+// === PENGGUNA ROUTES ===
 Route::middleware(['auth', 'role:Pengguna'])->group(function () {
+
+    // Halaman utama pengguna
     Route::view('/homepage', 'homepage')->name('homepage');
-    Route::view('/self-assessment', 'assessment')->name('assessment');
 
-
-    // Self Assessment
-    Route::get('/self-assessment',  [AssessmentController::class, 'assessmentAttempt']);
+    // === SELF-ASSESSMENT ===
+    Route::get('/self-assessment',  [AssessmentController::class, 'assessmentAttempt'])->name('assessment');
     Route::get('/self-assessment/test', [AssessmentController::class, 'showQuestion']);
     Route::post('/self-assessment/store-result', [AssessmentController::class, 'store'])->name('assessment.store');
     Route::get('/self-assessment/result/{asessId}', [AssessmentController::class, 'showResult'])->name('result');
 
-    // Counseling
+    // === COUNSELING ===
     Route::get('/counseling/add', [CounselingController::class, 'showDoctors'])->name('consultation');
     Route::get('/counseling/payment/{doctor_id}', [CounselingController::class, 'showPayment'])->name('counseling.payment');
     Route::post('/counseling/payment/{doctor_id}', [CounselingController::class, 'processPayment'])->name('counseling.processPayment');
     Route::get('/counseling/{userId}', [PesanController::class, 'showList'])->name('counselingList');
-    
-    // Chat
+
+    // === CHAT ===
     Route::get('/chat/{consultId}', [PesanController::class, 'showChat'])->name('chat');
     Route::post('/chat/send', [PesanController::class, 'send'])->name('chat.send');
-    
-    // Review
+
+    // === REVIEW ===
     Route::get('/review/{consultId}', [CounselingController::class, 'reviewForm'])->name('review');
     Route::post('/review/store/{consultId}', [CounselingController::class, 'storeReview'])->name('review.store');
     Route::get('/review/edit/{reviewId}', [CounselingController::class, 'reviewForm'])->name('review.edit');
     Route::put('/review/{reviewId}', [CounselingController::class, 'editReview'])->name('review.update');
 
-    // Journal
+    // === JOURNAL ===
     Route::resource('journals', JournalController::class)->parameters([
         'journals' => 'id_jurnal'
     ]);
 });
 
-// ROUTE ARTIKEL PUBLIK (boleh dilihat semua pengguna login)
+// === ARTIKEL PUBLIK (LOGIN REQUIRED, SEMUA ROLE) ===
 Route::middleware(['auth'])->group(function () {
     Route::get('/articles/all', [ArticleController::class, 'all'])->name('articles.all');
     Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
@@ -90,3 +94,4 @@ Route::middleware(['auth'])->group(function () {
     // Logout
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
+
