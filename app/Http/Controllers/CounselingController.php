@@ -5,15 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Payment;
+use Midtrans\Config;
 use App\Models\Consultation;
 use App\Models\Review;
 use Illuminate\Support\Facades\Auth;
+
+// Tambahkan Midtrans SDK
+
+use Midtrans\Snap;
 
 class CounselingController extends Controller
 {
     public function showDoctors(Request $request)
     {
-        $query = User::whereHas('roles', function($q) {
+        $query = User::whereHas('roles', function ($q) {
             $q->where('nama_role', 'dokter');
         })
         ->with('doctor');
@@ -30,15 +35,86 @@ class CounselingController extends Controller
     {
         $user = Auth::user();
 
-        // Ganti: cek total_konseling di tabel users
+        // Jika user masih punya free konsultasi, arahkan ke metode lama
         if ($user->total_konseling < 1) {
             return redirect('/')->with('error', 'Kamu belum pernah melakukan konsultasi gratis.');
         }
 
-        // Ambil data dokter dari tabel users
-        $doctor = User::findOrFail($doctor_id);
+        // Ambil dokter + relasi doctor-nya
+        $userDoctor = User::with('doctor')->findOrFail($doctor_id);
+        if (!$userDoctor || !$userDoctor->doctor) {
+    return redirect()->route('consultation')->with('error', 'Profil dokter tidak ditemukan.');
+}
 
-        return view('counseling.payment', compact('doctor'));
+        if (!$userDoctor->doctor) {
+            return redirect()->route('consultation')->with('error', 'Dokter belum memiliki profil.');
+        }
+
+        $doctorProfile = $userDoctor->doctor;
+        $amount = (int) $userDoctor->consultation_price;
+
+
+        // Simpan entri pembayaran jika belum ada
+        $payment = Payment::updateOrCreate(
+            [
+                'user_id' => $user->id_user,
+                'doctor_id' => $doctorProfile->id,
+                'status' => 'pending',
+            ],
+            [
+                'amount' => $amount,
+                'method' => 'Midtrans',
+            ]
+        );
+
+        // Simpan entri konsultasi jika belum ada
+        Consultation::firstOrCreate(
+            [
+                'id_user' => $user->id_user,
+                'id_dokter' => $doctorProfile->id,
+                'status' => 'menunggu',
+            ],
+            [
+                'tanggal_konsultasi' => now()->toDateString(),
+                'jam_mulai' => now()->format('H:i:s'),
+                'jam_selesai' => now()->addMinutes(30)->format('H:i:s'),
+            ]
+        );
+
+        // Konfigurasi Midtrans
+        
+Config::$serverKey = config('midtrans.server_key');
+Config::$isProduction = config('midtrans.is_production');
+Config::$isSanitized = config('midtrans.is_sanitized');
+Config::$is3ds = config('midtrans.is_3ds');
+
+        // Buat Snap token
+        $params = [
+            'transaction_details' => [
+                'order_id' => $payment->id . '-' . time(),
+                'gross_amount' => $payment->amount,
+            ],
+            'customer_details' => [
+                'first_name' => $user->nama_user,
+                'email' => $user->email_user,
+                'phone' => $user->nomor_telepon ?? '081234567890',
+            ],
+        ];
+
+        try {
+    $snapToken = Snap::getSnapToken($params);
+    $payment->snap_token = $snapToken;
+    $payment->save();
+} catch (\Exception $e) {
+    dd('Midtrans Error:', $e->getMessage());
+}
+
+
+        return view('counseling.payment', [
+            'payment' => $payment,
+            'doctor' => $userDoctor,
+            'snapToken' => $snapToken,
+        ]);
     }
 
     public function processPayment(Request $request, $doctor_id)
@@ -49,11 +125,12 @@ class CounselingController extends Controller
 
         $user = Auth::user();
         $doctor = User::findOrFail($doctor_id);
+        $doctorDetail = Doctor::findOrFail($doctor_id);
 
         Payment::create([
-            'user_id' => $user->id_user,           // sesuaikan dengan kolom di tabel kamu
-            'doctor_id' => $doctor->id_user,       // sesuaikan dengan kolom di tabel kamu
-            'amount' => $doctor->consultation_price,
+            'user_id' => $user->id_user,
+            'doctor_id' => $doctor->id_user,
+            'amount' => $doctorDetail->consultation_price,
             'method' => $request->method,
             'status' => 'pending',
             'created_at' => now(),
@@ -61,7 +138,7 @@ class CounselingController extends Controller
         ]);
 
         return redirect()->route('chat', $doctor_id)
-    ->with('success', 'Pembayaran berhasil disimpan.');
+            ->with('success', 'Pembayaran berhasil disimpan.');
     }
 
     public function reviewForm($consultId, Request $request)
