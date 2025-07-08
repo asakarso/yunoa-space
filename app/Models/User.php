@@ -16,6 +16,7 @@ class User extends Authenticatable
     protected $fillable = [
         'nama_user',
         'email_user',
+        'pass_user',
         'nomor_telepon',
         'total_konseling',
         'foto_profil',
@@ -51,11 +52,7 @@ class User extends Authenticatable
         return $this->hasOne(Doctor::class, 'user_id', 'id_user');
     }
 
-    public function doctorProfile() {
-    return $this->hasOne(Doctor::class, 'id_user', 'id_user');
-}
-
-    public function patientProfile()
+    public function profile()
     {
         // Gunakan hasOne jika satu user hanya punya satu profil
         return $this->hasOne(PatientProfile::class, 'id_user', 'id_user'); 
