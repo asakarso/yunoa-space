@@ -129,7 +129,7 @@
                 },
                 onPending: function(result){
                     console.log(result);
-                    window.location.href = "{{ route('counseling.list', ['userId' => auth()->id()]) }}?status=pending";
+                    window.location.href = "{{ route('counselingList', ['userId' => auth()->id()]) }}?status=pending";
                 },
                 onError: function(result){
                     console.log(result);

@@ -51,7 +51,7 @@ class CounselingController extends Controller
         }
 
         $doctorProfile = $userDoctor->doctor;
-        $amount = (int) $userDoctor->consultation_price;
+        $amount = (int) $userDoctor->doctor->consultation_price;
 
 
         // Simpan entri pembayaran jika belum ada
@@ -83,10 +83,10 @@ class CounselingController extends Controller
 
         // Konfigurasi Midtrans
         
-Config::$serverKey = config('midtrans.server_key');
-Config::$isProduction = config('midtrans.is_production');
-Config::$isSanitized = config('midtrans.is_sanitized');
-Config::$is3ds = config('midtrans.is_3ds');
+        Config::$serverKey = config('midtrans.server_key');
+        Config::$isProduction = config('midtrans.is_production');
+        Config::$isSanitized = config('midtrans.is_sanitized');
+        Config::$is3ds = config('midtrans.is_3ds');
 
         // Buat Snap token
         $params = [
