@@ -62,11 +62,11 @@
 </head>
 <body>
     <x-navbar></x-navbar>
-    <main class="container">
-        <h1>Hasil Self-Assessment Anda</h1>
+    <main class="container shadow">
+        <h1>Your Self-Assessment Result</h1>
 
         @if(isset($score))
-            <div class="score-value">{{ $score }}</div>
+            <div class="score-value my-5">{{ $score }}</div>
             <div class="advice">
                 @if($score >= 40)
                     <p>It is advisable to consult a mental health professional for further guidance.</p>
@@ -77,19 +77,14 @@
                 @endif
             </div>
         @else
-            <p>Tidak ada data skor yang ditemukan.</p>
+            <p>No score was found/p>
         @endif
 
         <div class="additional-info">
             @if(isset($totalAttempts) && $totalAttempts > 0)
-                <p>Anda telah melakukan assessment ini sebanyak: <strong>{{ $totalAttempts }} kali</strong>.</p>
-                @if(isset($latestScoreFromDb) && $totalAttempts > 1 && $latestScoreFromDb != $score)
-                    <p>Skor terakhir Anda sebelumnya adalah: <strong>{{ $latestScoreFromDb }}</strong>.</p>
-                @elseif(isset($latestScoreFromDb) && $totalAttempts == 1)
-                     <p>Ini adalah assessment pertama Anda.</p>
-                @endif
+                <p>You have taken this assessment: <strong>{{ $totalAttempts }} times</strong>.</p>
             @else
-                <p>Ini adalah assessment pertama Anda.</p>
+                <p>This is your first attempt.</p>
             @endif
         </div>
 

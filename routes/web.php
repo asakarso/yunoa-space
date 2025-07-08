@@ -52,20 +52,29 @@ Route::middleware(['auth', 'role:Pengguna'])->group(function () {
     Route::view('/homepage', 'homepage')->name('homepage');
     Route::view('/self-assessment', 'assessment')->name('assessment');
 
+
     // Self Assessment
+
+    Route::get('/self-assessment',  [AssessmentController::class, 'assessmentAttempt']);
     Route::get('/self-assessment/test', [AssessmentController::class, 'showQuestion']);
     Route::post('/self-assessment/store-result', [AssessmentController::class, 'store']);
-    Route::get('/self-assessment/result', [AssessmentController::class, 'showResult']);
+    Route::get('/self-assessment/result', [AssessmentController::class, 'showResult'])->name('result');
 
     // Counseling
+    Route::get('/counseling/add', [CounselingController::class, 'showDoctors'])->name('consultation');
     Route::get('/counseling/payment/{doctor_id}', [CounselingController::class, 'showPayment'])->name('counseling.payment');
     Route::post('/counseling/payment/{doctor_id}', [CounselingController::class, 'processPayment'])->name('counseling.processPayment');
     Route::get('/counseling/{userId}', [PesanController::class, 'showList'])->name('counselingList');
-    Route::get('/counseling/add', [ConsultationController::class, 'index'])->name('consultation');
-
+    
     // Chat
-    Route::get('/chat/{userId}', [PesanController::class, 'showChat'])->name('chat');
+    Route::get('/chat/{consultId}', [PesanController::class, 'showChat'])->name('chat');
     Route::post('/chat/send', [PesanController::class, 'send'])->name('chat.send');
+    
+    // Review
+    Route::get('/review/{consultId}', [CounselingController::class, 'reviewForm'])->name('review');
+    Route::post('/review/store/{consultId}', [CounselingController::class, 'storeReview'])->name('review.store');
+    Route::get('/review/edit/{reviewId}', [CounselingController::class, 'reviewForm'])->name('review.edit');
+    Route::put('/review/{reviewId}', [CounselingController::class, 'editReview'])->name('review.update');
 
     // Journal
     Route::resource('journals', JournalController::class)->parameters([
