@@ -17,7 +17,7 @@ class DoctorSeeder extends Seeder
         $doctorsData = [
             [
                 'user' => [
-                    'nama_user' => 'Dr. Anisa Putri',
+                    'nama_user' => 'dr. Anisa Putri',
                     'email_user' => 'anisa.putri@example.com',
                     'pass_user' => Hash::make('password123'),
                     'nomor_telepon' => '081234567890',
@@ -31,28 +31,28 @@ class DoctorSeeder extends Seeder
             ],
             [
                 'user' => [
-                    'nama_user' => 'Dr. Budi Santoso',
+                    'nama_user' => 'dr. Budi Santoso',
                     'email_user' => 'budi.santoso@example.com',
                     'pass_user' => Hash::make('password123'),
                     'nomor_telepon' => '081234567891',
                     'foto_profil' => 'doctors/doctor2.jpg',
                 ],
                 'doctor_profile' => [
-                    'specialization' => 'Marriage & Family Counselor',
+                    'specialization' => 'Clinical Psychologist',
                     'schedule' => 'Tue, Thu (10:00 - 17:00)',
                     'consultation_price' => 300000,
                 ]
             ],
             [
                 'user' => [
-                    'nama_user' => 'Dr. Citra Lestari',
+                    'nama_user' => 'dr. Citra Lestari',
                     'email_user' => 'citra.lestari@example.com',
                     'pass_user' => Hash::make('password123'),
                     'nomor_telepon' => '081234567892',
                     'foto_profil' => 'doctors/doctor3.jpg',
                 ],
                 'doctor_profile' => [
-                    'specialization' => 'Child Development Specialist',
+                    'specialization' => 'Clinical Psychologist',
                     'schedule' => 'Weekend (10:00 - 14:00)',
                     'consultation_price' => 275000,
                 ]
@@ -67,7 +67,7 @@ class DoctorSeeder extends Seeder
                     'total_konseling' => 6, 
                 ],
                 'doctor_profile' => [
-                    'specialization' => 'Child Development Specialist',
+                    'specialization' => 'Clinical Psychologist',
                     'schedule' => 'Mon, Wed, Fri (09:00 - 15:00)',
                     'consultation_price' => 250000,
                 ]
