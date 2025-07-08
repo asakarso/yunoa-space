@@ -13,9 +13,10 @@ return new class extends Migration
             $table->string('judul_artikel');
             $table->date('tanggal_artikel');
             $table->time('waktu_artikel');
-            $table->unsignedInteger('operator_id'); // FK ke users.id_user (misal operator ada di tabel users)
+            $table->unsignedInteger('operator_id'); // FK ke users.id_user
             $table->text('konten_artikel');
             $table->string('gambar_cover')->nullable();
+            $table->enum('status', ['draft', 'published'])->default('draft');
             $table->timestamps();
 
             // Foreign key constraint
