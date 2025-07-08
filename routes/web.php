@@ -54,11 +54,10 @@ Route::middleware(['auth', 'role:Pengguna'])->group(function () {
 
 
     // Self Assessment
-
     Route::get('/self-assessment',  [AssessmentController::class, 'assessmentAttempt']);
     Route::get('/self-assessment/test', [AssessmentController::class, 'showQuestion']);
-    Route::post('/self-assessment/store-result', [AssessmentController::class, 'store']);
-    Route::get('/self-assessment/result', [AssessmentController::class, 'showResult'])->name('result');
+    Route::post('/self-assessment/store-result', [AssessmentController::class, 'store'])->name('assessment.store');
+    Route::get('/self-assessment/result/{asessId}', [AssessmentController::class, 'showResult'])->name('result');
 
     // Counseling
     Route::get('/counseling/add', [CounselingController::class, 'showDoctors'])->name('consultation');
