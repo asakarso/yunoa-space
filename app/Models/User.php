@@ -51,4 +51,11 @@ class User extends Authenticatable
     {
         return $this->hasOne(Doctor::class, 'user_id', 'id_user');
     }
+
+    public function profile()
+    {
+        // Gunakan hasOne jika satu user hanya punya satu profil
+        return $this->hasOne(PatientProfile::class, 'id_user', 'id_user'); 
+    }
+
 }

@@ -1,0 +1,31 @@
+/* resources/css/profile.css */
+.profile-sidebar .card, .main-content .card {
+    border-radius: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.profile-sidebar .profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 1rem;
+    display: block;
+    border: 3px solid #6BB99F;
+}
+
+.main-content .card {
+    border: 1px solid #e9ecef;
+}
+
+.main-content .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.main-content .card-title {
+    font-weight: bold;
+    color: #0F5A4A;
+}

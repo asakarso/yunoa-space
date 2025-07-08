@@ -12,6 +12,7 @@ export default defineConfig({
                 "resources/css/consultation.css",
                 "resources/css/components/navbar.css",
                 "resources/css/articles.css",
+                "resources/css/profile.css",
             ],
             refresh: true,
         }),
