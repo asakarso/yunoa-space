@@ -81,7 +81,7 @@
                 </div>
 
                 <div class="doctor-info">
-                    <img src="{{ asset($doctor->foto_profil) }}" alt="Foto Profil {{ $doctor->nama_user }}">
+                    <img src="{{ asset('storage/'.$doctor->foto_profil) }}" alt="Foto Profil {{ $doctor->nama_user }}">
                     <div>
                         <h4 class="mb-0 fw-bold">{{ $doctor->nama_user }}</h4>
                         <p class="mb-0 text-muted">{{ $doctor->specialization ?? 'Psikolog Profesional' }}</p>

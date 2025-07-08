@@ -41,32 +41,31 @@ Route::middleware(['auth', 'role:Operator'])->group(function () {
         return view('operator.dashboard');
     });
 });
-Route::get('/counseling/add', [ConsultationController::class, 'index'])->name('consultation');
 
 Route::middleware(['auth', 'role:Pengguna'])->group(function () {
     Route::get('/homepage', function () {
         return view('homepage');
     });
 
-    Route::get('/self-assessment', function () {
-        return view('assessment');
-    });
+    Route::get('/self-assessment',  [AssessmentController::class, 'assessmentAttempt']);
     Route::get('/self-assessment/test', [AssessmentController::class, 'showQuestion']);
     Route::post('/self-assessment/store-result', [AssessmentController::class, 'store']);
-    Route::get('/self-assessment/result', [AssessmentController::class, 'showResult']);
+    Route::get('/self-assessment/result', [AssessmentController::class, 'showResult'])->name('result');
 
+    Route::get('/counseling/add', [CounselingController::class, 'showDoctors'])->name('consultation');
     Route::get('/counseling/payment/{doctor_id}', [CounselingController::class, 'showPayment'])->name('counseling.payment');
     Route::post('/counseling/payment/{doctor_id}', [CounselingController::class, 'processPayment'])->name('counseling.processPayment');
-
-    Route::post('/chat/send', [PesanController::class, 'send'])->name('chat.send');
-    Route::get('/chat/{userId}', [PesanController::class, 'showChat'])->name('chat');
-
     Route::get('/counseling/{userId}', [PesanController::class, 'showList'])->name('counselingList');
+    Route::get('/chat/{consultId}', [PesanController::class, 'showChat'])->name('chat');
+    Route::post('/chat/send', [PesanController::class, 'send'])->name('chat.send');
+    Route::get('/review/{consultId}', [CounselingController::class, 'reviewForm'])->name('review');
+    Route::post('/review/store/{consultId}', [CounselingController::class, 'storeReview'])->name('review.store');
+    Route::get('/review/edit/{reviewId}', [CounselingController::class, 'reviewForm'])->name('review.edit');
+    Route::put('/review/{reviewId}', [CounselingController::class, 'editReview'])->name('review.update');
 
     Route::resource('journals', JournalController::class)->parameters([
         'journals' => 'id_jurnal'
-    ]) ;
-    
+    ]);
 });
 
 Route::middleware(['auth'])->group(function () {
