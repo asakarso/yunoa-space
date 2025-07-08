@@ -16,11 +16,12 @@ class Payment extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'id_user');
     }
 
     public function doctor()
     {
-        return $this->belongsTo(Doctor::class);
+        // relasi ke Doctor model
+        return $this->belongsTo(Doctor::class, 'doctor_id', 'id');
     }
 }

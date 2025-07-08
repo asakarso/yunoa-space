@@ -9,6 +9,11 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+    {{-- MIDTRANS SNAP SCRIPT --}}
+    <script type="text/javascript"
+        src="{{ config('midtrans.is_production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}"
+        data-client-key="{{ config('midtrans.client_key') }}"></script>
+
     <style>
         :root {
             --yunoa-green: #6BB99F;
@@ -17,7 +22,7 @@
         body {
             background-color: #f8f9fa;
         }
-        main { 
+        main {
             min-height: calc(100vh - 120px);
         }
         .payment-container {
@@ -49,7 +54,7 @@
             margin-bottom: 2rem;
         }
         .doctor-info img {
-            width: 60px; 
+            width: 60px;
             height: 60px;
             object-fit: cover;
             border-radius: 50%;
@@ -74,42 +79,31 @@
     <main class="py-5">
         <div class="container">
             <div class="payment-container shadow-lg">
-                
+
                 <div class="list-header">
                     <h2 class="fw-bold mb-1">Konfirmasi <span class="colors-ijo-tua">Pembayaran</span></h2>
                     <p class="text-muted mb-0">Selesaikan pembayaran untuk memulai sesi konseling Anda.</p>
                 </div>
 
                 <div class="doctor-info">
-                    <img src="{{ asset('storage/'.$doctor->foto_profil) }}" alt="Foto Profil {{ $doctor->nama_user }}">
+                    <img src="{{ $doctor->foto_profil ? asset('storage/' . $doctor->foto_profil) : asset('images/default-profile.png') }}" alt="Foto Profil {{ $doctor->nama_user }}">
                     <div>
                         <h4 class="mb-0 fw-bold">{{ $doctor->nama_user }}</h4>
-                        <p class="mb-0 text-muted">{{ $doctor->specialization ?? 'Psikolog Profesional' }}</p>
+                        <p class="mb-0 text-muted">{{ $doctor->doctor->specialization ?? 'Psikolog Profesional' }}
+</p>
                     </div>
                 </div>
 
-                <form method="POST" action="{{ route('counseling.processPayment', $doctor) }}">
-                    @csrf
-                    <div class="mb-4">
-                        <label for="paymentMethod" class="form-label fw-semibold">Pilih Metode Pembayaran</label>
-                        <select name="method" id="paymentMethod" class="form-select form-select-lg" required>
-                            <option value="transfer">Transfer Bank</option>
-                            <option value="qris">QRIS</option>
-                            <option value="va">Virtual Account</option>
-                        </select>
-                    </div>
+                <hr class="my-4">
 
-                    <hr class="my-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <span class="fs-5 text-muted">Total Biaya:</span>
+                    <span class="fs-4 fw-bold">Rp{{ number_format($payment->amount, 0, ',', '.') }}</span>
+                </div>
 
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <span class="fs-5 text-muted">Total Biaya:</span>
-                        <span class="fs-4 fw-bold">Rp{{ number_format($doctor->consultation_price, 0, ',', '.') }}</span>
-                    </div>
-
-                    <button type="submit" class="btn btn-yunoa-green w-100">
-                        <i class="bi bi-shield-lock me-2"></i>Bayar Sekarang
-                    </button>
-                </form>
+                <button id="pay-button" class="btn btn-yunoa-green w-100 btn-lg">
+                    <i class="bi bi-shield-lock me-2"></i>Pilih Metode & Bayar Sekarang
+                </button>
 
             </div>
         </div>
@@ -121,5 +115,35 @@
         </div>
     </footer>
 
+    {{-- MIDTRANS INTEGRATION --}}
+    <script type="text/javascript">
+        var payButton = document.getElementById('pay-button');
+        payButton.addEventListener('click', function () {
+            payButton.disabled = true;
+            payButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Memproses...';
+
+            snap.pay('{{ $snapToken }}', {
+                onSuccess: function(result){
+                    console.log(result);
+                    window.location.href = "{{ route('counselingList', ['userId' => auth()->id()]) }}?status=success";
+                },
+                onPending: function(result){
+                    console.log(result);
+                    window.location.href = "{{ route('counseling.list', ['userId' => auth()->id()]) }}?status=pending";
+                },
+                onError: function(result){
+                    console.log(result);
+                    alert("Pembayaran gagal!");
+                    payButton.disabled = false;
+                    payButton.innerHTML = '<i class="bi bi-shield-lock me-2"></i>Pilih Metode & Bayar Sekarang';
+                },
+                onClose: function(){
+                    alert('Anda menutup popup pembayaran.');
+                    payButton.disabled = false;
+                    payButton.innerHTML = '<i class="bi bi-shield-lock me-2"></i>Pilih Metode & Bayar Sekarang';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
