@@ -18,7 +18,7 @@
         <a href="{{ route('counselingList', auth()->user()->id_user) }}">Consultation</a>
         <a href="{{ route('articles.index') }}">Education</a>
         <a href="{{ url('/journals')}}">Daily Gratitude</a>
-        <a class="profile px-4" href="#" >Profile</a>
+        <a class="profile px-4" href="{{ route('profile') }}">Profile</a>
         
         <form method="POST" action="{{ route('logout') }}" class="d-flex align-items-center">
             @csrf

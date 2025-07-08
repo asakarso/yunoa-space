@@ -13,6 +13,7 @@ use App\Http\Controllers\Operator\ArticleController as OperatorArticleController
 use App\Http\Controllers\Operator\DashboardController;
 use App\Http\Controllers\Operator\ArticlePreviewController;
 use App\Http\Controllers\MidtransCallbackController;
+use App\Http\Controllers\ProfileController;
 
 // === CALLBACK MIDTRANS (TIDAK PERLU LOGIN) ===
 Route::post('/midtrans/callback', [MidtransCallbackController::class, 'callback'])->name('midtrans.callback');
@@ -90,6 +91,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/articles/all', [ArticleController::class, 'all'])->name('articles.all');
     Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
     Route::get('/articles/{id}', [ArticleController::class, 'show'])->name('articles.show');
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 
     // Logout
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
