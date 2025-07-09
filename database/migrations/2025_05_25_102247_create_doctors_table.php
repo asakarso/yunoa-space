@@ -9,15 +9,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('doctors', function (Blueprint $table) {
-            $table->increments('id'); 
-            $table->unsignedInteger('user_id')->unique(); 
+            $table->increments('id');
+            $table->unsignedInteger('user_id')->unique();
             $table->string('specialization');
-            $table->text('schedule')->nullable(); 
-            $table->decimal('consultation_price', 10, 2)->nullable(); 
-            
+            $table->text('education')->nullable();
+            $table->string('str_sip_file')->nullable();
+            $table->text('schedule')->nullable();
+            $table->decimal('consultation_price', 10, 2)->nullable();
+            $table->timestamp('verified_at')->nullable();
             $table->timestamps();
 
-            // Mendefinisikan foreign key constraint
             $table->foreign('user_id')->references('id_user')->on('users')->onDelete('cascade');
         });
     }

@@ -16,50 +16,44 @@ class RegisterController extends Controller
         return view('auth.register');
     }
 
-public function register(Request $request)
-{
-    // Validasi input (sudah benar)
-    $validatedData = $request->validate([
-        'nama_user' => 'required|string|max:255',
-        'tanggal_lahir' => 'required|date',
-        'jenis_kelamin' => 'required|in:Laki-Laki,Perempuan', 
-        'nomor_telepon' => 'required|string|max:20',
-        'email_user' => 'required|string|email|unique:users,email_user',
-        'pass_user' => 'required|string|min:6|confirmed',
-        'aktivitas_utama' => 'nullable|string|max:255',
-        'tujuan_menggunakan' => 'nullable|string|max:255',
-        'jam_tidur' => 'nullable|date_format:H:i',
-    ]);
+    public function register(Request $request)
+    {
+        // Validasi input
+        $validatedData = $request->validate([
+            'nama_user' => 'required|string|max:255',
+            'tanggal_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|in:Male,Female',
+            'nomor_telepon' => 'required|string|max:20',
+            'email_user' => 'required|string|email|unique:users,email_user',
+            'pass_user' => 'required|string|min:6|confirmed',
+            'aktivitas_utama' => 'nullable|string|max:255',
+            'tujuan_menggunakan' => 'nullable|string|max:255',
+            'jam_tidur' => 'nullable|date_format:H:i',
+        ]);
 
         try {
-            // Mulai transaksi database
             DB::beginTransaction();
             
-            // Cek ID role 'pengguna'
             $rolePenggunaId = DB::table('roles')->where('nama_role', 'pengguna')->value('id_role');
-
             if (!$rolePenggunaId) {
-                // Melempar exception agar ditangkap oleh blok catch
-                throw new \Exception('Role "pengguna" tidak ditemukan di database.');
+                throw new \Exception('Role "pengguna" not found in the database.');
             }
 
-            // Buat data di tabel 'users' terlebih dahulu
             $user = User::create([
                 'nama_user' => $validatedData['nama_user'],
                 'email_user' => $validatedData['email_user'],
-                'foto_profil' => 'default.png',
+                'foto_profil' => 'defaults/default-profile.jpg', // Default profile picture
                 'pass_user' => Hash::make($validatedData['pass_user']),
                 'nomor_telepon' => $validatedData['nomor_telepon'],
                 'total_konseling' => 0,
             ]);
 
-            // Buat data profil yang terhubung dengan user baru
             $user->profile()->create([
                 'tanggal_lahir' => $validatedData['tanggal_lahir'],
                 'jenis_kelamin' => $validatedData['jenis_kelamin'],
-                'aktivitas_utama' => $validatedData['aktivitas_utama'],
-                'tujuan_menggunakan' => $validatedData['tujuan_menggunakan'],
-                'jam_tidur' => $validatedData['jam_tidur'],
+                'aktivitas_utama' => $request->aktivitas_utama,
+                'tujuan_menggunakan' => $request->tujuan_menggunakan,
+                'jam_tidur' => $request->jam_tidur,
             ]);
 
             DB::table('user_roles')->insert([
@@ -67,22 +61,16 @@ public function register(Request $request)
                 'id_role' => $rolePenggunaId,
             ]);
             
-            // Simpan semua perubahan ke database jika tidak ada error
             DB::commit();
 
-            // LOGIN-KAN PENGGUNA SECARA OTOMATIS BIAR DIA BISA
-            //LANGSUNG MASUK KE HALAMAN PROFIL
             Auth::login($user);
 
-            return redirect('/profile')->with('success', 'Akun berhasil dibuat');
+            return redirect('/homepage')->with('success', 'Account created successfully! Welcome to Yunoa Space.');
 
         } catch (\Exception $e) {
-            // Batalkan semua query jika terjadi error
             DB::rollBack();
             
-            // Kembalikan ke halaman sebelumnya dengan input dan pesan error
-            return back()->withInput()->withErrors(['db_error' => 'GAGAL: ' . $e->getMessage()]);
+            return back()->withInput()->withErrors(['db_error' => 'Registration failed: ' . $e->getMessage()]);
         }
     }
-
 }
