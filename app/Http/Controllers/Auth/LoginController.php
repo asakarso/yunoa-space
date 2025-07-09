@@ -22,35 +22,36 @@ class LoginController extends Controller
             'pass_user' => 'required'
         ]);
 
-        $user = User::where('email_user', $request->email_user)->first();
+        $credentials = [
+            'email_user' => $request->email_user,
+            'password' => $request->pass_user
+        ];
 
-        if ($user && Hash::check($request->pass_user, $user->pass_user)) {
-            Auth::login($user);
-
-            // Ambil role pertama user
-            $role = $user->roles->first();
-
-            if (!$role) {
-                Auth::logout();
-                return back()->withErrors(['Role pengguna tidak ditemukan.']);
-            }
-
-            // Cek verifikasi kalau rolenya dokter
-            // if (strtolower($role->nama_role) === 'dokter' && !$user->verified) {
-            //     Auth::logout();
-            //     return back()->withErrors(['Akun Anda belum diverifikasi admin.']);
-            // }
-
-            // Redirect berdasarkan role
-            return match (strtolower($role->nama_role)) {
-                'admin' => redirect('/admin/dashboard'),
-                'dokter' => redirect('/dokter/dashboard'),
-                'operator' => redirect('/operator/dashboard'),
-                default => redirect('/homepage'),
-            };
+        // We use Auth::validate to check credentials without logging in
+        if (!Auth::validate(['email_user' => $request->email_user, 'password' => $request->pass_user])) {
+             return back()->withErrors(['email_user' => 'The provided credentials do not match our records.']);
         }
 
-        return back()->withErrors(['Email atau password salah.']);
+        $user = Auth::getProvider()->retrieveByCredentials(['email_user' => $request->email_user]);
+
+        // Check if the user is a doctor and if they are verified
+        if ($user->roles->contains('nama_role', 'dokter')) {
+            if (!$user->doctor || !$user->doctor->verified_at) {
+                return back()->withErrors(['email_user' => 'Your account is pending verification by an administrator.']);
+            }
+        }
+        
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        $role = $user->roles->first()->nama_role;
+
+        return match (strtolower($role)) {
+            'admin' => redirect()->intended(route('admin.dashboard')),
+            'dokter' => redirect()->intended(route('dokter.dashboard')),
+            'operator' => redirect()->intended(route('operator.dashboard')),
+            default => redirect()->intended(route('homepage')),
+        };
     }
 
     public function logout(Request $request)
