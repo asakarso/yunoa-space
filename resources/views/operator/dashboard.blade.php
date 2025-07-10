@@ -81,9 +81,9 @@
 
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">
-            <h5 class="mb-3 colors-ijo">
-                <i class="bi bi-person-circle me-2"></i>Hello, <strong>{{ auth()->user()->name }}</strong>!
-            </h5>
+        <h5 class="mb-3 colors-ijo">
+    <i class="bi bi-person-circle me-2"></i>Hello, <strong>{{ auth()->user()->nama_user}}</strong>!
+</h5>
             <p class="text-muted mb-3">
                 You are logged in as <span class="badge bg-success text-white">Operator</span>
             </p>
