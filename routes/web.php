@@ -9,6 +9,7 @@ use App\Http\Controllers\CounselingController;
 use App\Http\Controllers\PesanController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\DokterController;
 use App\Http\Controllers\Operator\ArticleController as OperatorArticleController;
 use App\Http\Controllers\Operator\DashboardController;
 use App\Http\Controllers\Operator\ArticlePreviewController;
@@ -93,6 +94,19 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
     Route::get('/articles/{id}', [ArticleController::class, 'show'])->name('articles.show');
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+
+// === DOKTERR
+Route::middleware(['auth', 'role:Dokter'])->prefix('dokter')->group(function () {
+    Route::get('/dokter/dashboard', [DokterController::class, 'dashboard'])->name('dokter.dashboard');
+    Route::get('/dokter/patients', [DokterController::class, 'patients'])->name('dokter.dashboard.patients');
+    Route::get('/dokter/profile', [DokterController::class, 'profil'])->name('doctor.profile');
+    Route::get('/dokter/chat/{id_konsul}', [DokterController::class, 'chat'])->name('dokter.chat');
+    Route::post('/dokter/chat/send', [DokterController::class, 'sendChat'])->name('dokter.chat.send');
+    Route::get('/dokter/review/{id}', [ReviewController::class, 'showForDoctor'])->name('dokter.review.show');
+    Route::post('/dokter/akhiri-konsultasi', [DokterController::class, 'akhiriKonsultasi'])->name('dokter.konsultasi.akhiri');
+
+
+});
 
     // Logout
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

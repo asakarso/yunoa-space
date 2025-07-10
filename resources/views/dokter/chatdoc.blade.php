@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Pasien | Yunoa Space</title>
-    
+
     @vite(['resources/css/app.css'])
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 
     <style>
         body, html {
@@ -127,8 +128,48 @@
     </style>
 </head>
 <body>
-    <x-navbar></x-navbar>
 
+    {{-- NAVBAR DASHBOARD DOKTER --}}
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3 px-4">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold text-success" href="{{ route('dokter.dashboard') }}">
+                Yunoa Space
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarDoctor" aria-controls="navbarDoctor" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarDoctor">
+                <ul class="navbar-nav ms-auto align-items-center gap-3">
+                    <li class="nav-item">
+                        <a class="nav-link fw-medium" href="{{ route('dokter.dashboard.patients') }}">
+                            <i class="bi bi-people-fill me-1"></i> Daftar Pasien
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle fw-medium" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle me-1"></i> Profil
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ route('profile') }}">Edit Profil</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="bi bi-box-arrow-right me-2"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {{-- MAIN CHAT --}}
     <main class="d-flex align-items-center justify-content-center p-md-4">
         <div class="chat-container shadow-lg">
             {{-- Header --}}
@@ -143,7 +184,7 @@
                 </div>
             </div>
 
-            {{-- Chat Area --}}
+            {{-- Chat --}}
             <div class="chat-window">
                 <div id="chat-messages-container" class="chat-messages">
                     @foreach ($pesans as $pesan)
@@ -191,7 +232,7 @@
         </div>
     </main>
 
-    {{-- Modal Akhiri Konsultasi --}}
+    {{-- Modal --}}
     <div class="modal fade" id="endConsultationModal" tabindex="-1" aria-labelledby="endConsultationModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form method="POST" action="{{ route('dokter.konsultasi.akhiri') }}">
@@ -203,10 +244,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="laporan_hasil" class="form-label">Tulis Laporan Diagnosis</label>
-                            <textarea name="laporan_hasil" id="laporan_hasil" class="form-control" rows="5" placeholder="Tuliskan hasil diagnosis atau kesimpulan konsultasi..." required></textarea>
-                        </div>
+                        <label for="laporan_hasil" class="form-label">Laporan Diagnosis</label>
+                        <textarea name="laporan_hasil" id="laporan_hasil" class="form-control" rows="5" required placeholder="Tuliskan hasil diagnosis atau kesimpulan konsultasi..."></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -217,6 +256,7 @@
         </div>
     </div>
 
+    {{-- Footer --}}
     <footer class="bg-white">
         <div class="container text-center py-1">
             <p class="m-0">© 2025 Yunoa Space. All rights reserved.</p>
