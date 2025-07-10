@@ -40,7 +40,7 @@
     <p class="text-muted mb-4">{{ $article->tanggal_artikel }} | {{ $article->waktu_artikel }}</p>
 
     @if ($article->gambar_cover)
-        <img src="{{ asset('storage/' . $article->gambar_cover) }}" alt="Gambar Artikel" class="img-fluid artikel-cover">
+        <img src="{{ asset('storage/article_covers/' . $article->gambar_cover) }}" alt="Gambar Artikel" class="img-fluid artikel-cover">
     @endif
 
     <div class="artikel-body">

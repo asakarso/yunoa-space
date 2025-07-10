@@ -59,7 +59,7 @@
                     </p>
 
                     {{-- Gambar Cover Artikel --}}
-                    <img src="{{ asset('storage/' . $article->gambar_cover) }}" class="img-fluid rounded-3 mb-4 shadow-sm" alt="{{ $article->judul_artikel }}">
+                    <img src="{{ asset('storage/article_covers/' . $article->gambar_cover) }}" class="img-fluid rounded-3 mb-4 shadow-sm" alt="{{ $article->judul_artikel }}">
                     {{-- Isi Konten Artikel --}}
                     <div class="article-content" style="font-size: 1.1rem; line-height: 1.8;">
                         {!! $article->konten_artikel !!}
