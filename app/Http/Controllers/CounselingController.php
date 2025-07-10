@@ -17,6 +17,11 @@ class CounselingController extends Controller
     {
         $query = User::whereHas('roles', function ($q) {
             $q->where('nama_role', 'dokter');
+        })
+        ->whereHas('doctor', function ($q) {
+            $q->whereNotNull('verified_at');
+        })
+        ->with('doctor');
         })->with('doctor');
 
         if ($request->has('search') && $request->search != '') {
@@ -27,13 +32,16 @@ class CounselingController extends Controller
         return view('consultation', compact('doctors'));
     }
 
+
     public function showPayment($doctor_id)
     {
         $user = Auth::user();
 
+
         if ($user->total_konseling < 1) {
             return redirect('/')->with('error', 'Kamu belum pernah melakukan konsultasi gratis.');
         }
+
 
         $userDoctor = User::with('doctor')->findOrFail($doctor_id);
         if (!$userDoctor || !$userDoctor->doctor) {
@@ -77,6 +85,7 @@ class CounselingController extends Controller
         Config::$isSanitized = config('midtrans.is_sanitized');
         Config::$is3ds = config('midtrans.is_3ds');
 
+
         $params = [
             'transaction_details' => [
                 'order_id' => $payment->id . '-' . time(),
@@ -87,7 +96,17 @@ class CounselingController extends Controller
                 'email' => $user->email_user,
                 'phone' => $user->nomor_telepon ?? '081234567890',
             ],
+            'transaction_details' => [
+                'order_id' => $payment->id . '-' . time(),
+                'gross_amount' => $payment->amount,
+            ],
+            'customer_details' => [
+                'first_name' => $user->nama_user,
+                'email' => $user->email_user,
+                'phone' => $user->nomor_telepon ?? '081234567890',
+            ],
         ];
+
 
         try {
             $snapToken = Snap::getSnapToken($params);
@@ -134,6 +153,7 @@ class CounselingController extends Controller
             ->with('success', 'Pembayaran berhasil disimpan.');
     }
 
+
     public function reviewForm($consultId, Request $request)
     {
         $isEdit = $request->query('isEdit', false);
@@ -143,6 +163,7 @@ class CounselingController extends Controller
 
         return view('user.review', compact('konsultasi', 'dokter', 'review', 'isEdit'));
     }
+
 
     public function storeReview(Request $request, $consultId)
     {
@@ -158,15 +179,29 @@ class CounselingController extends Controller
             'deskripsi_review' => $request->deskripsi_review,
             'created_at' => now(),
             'updated_at' => now(),
+            'id_user' => $user->id_user,
+            'id_dokter' => $request->dokterId,
+            'id_konsul' => $consultId,
+            'tanggal_review' => now()->format('Y-m-d'),
+            'waktu_review' => now()->format('H:i:s'),
+            'rating' => $request->rating,
+            'deskripsi_review' => $request->deskripsi_review,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         return redirect()->route('review', $consultId);
     }
 
+
     public function editReview(Request $request, $reviewId)
     {
         $review = Review::findOrFail($reviewId);
         $review->update([
+            'tanggal_review' => now()->format('Y-m-d'),
+            'waktu_review' => now()->format('H:i:s'),
+            'rating' => $request->rating,
+            'deskripsi_review' => $request->deskripsi_review,
             'tanggal_review' => now()->format('Y-m-d'),
             'waktu_review' => now()->format('H:i:s'),
             'rating' => $request->rating,
