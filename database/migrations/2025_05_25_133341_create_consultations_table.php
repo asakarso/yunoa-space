@@ -11,14 +11,14 @@ return new class extends Migration
         Schema::create('consultations', function (Blueprint $table) {
             $table->increments('id_konsul');
             $table->unsignedInteger('id_user');
-            $table->unsignedInteger('id_dokter'); 
-            
+            $table->unsignedInteger('id_dokter');
+
             $table->date('tanggal_konsultasi');
             $table->time('jam_mulai');
-            $table->time('jam_selesai');
+            $table->time('jam_selesai')->nullable();
             $table->string('status')->default('menunggu');
             $table->text('laporan_hasil')->nullable();
-            $table->timestamps(); 
+            $table->timestamps();
 
             // Mendefinisikan Foreign Key Constraints
             $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');

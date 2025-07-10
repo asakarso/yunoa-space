@@ -34,26 +34,15 @@ class Consultation extends Model
         return $this->hasOne(Review::class, 'id_konsul', 'id_konsul');
     }
 
-    /**
-     * =================================================================
-     * KODE YANG SALAH TELAH DIGANTI DENGAN YANG INI
-     * =================================================================
-     * Relasi ini "menjembatani" tabel consultations -> doctors -> users
-     * untuk mendapatkan data User dari seorang dokter.
-     */
     public function dokter()
     {
-        return $this->hasOneThrough(
-            User::class,    // Model tujuan yang ingin kita ambil datanya (User).
-            Doctor::class,  // Model perantara yang harus dilewati (Doctor).
-            'id',           // Foreign key di tabel perantara `doctors` (doctors.id).
-            'id_user',      // Foreign key di tabel tujuan `users` (users.id_user).
-            'id_dokter',    // Local key di tabel awal `consultations` (consultations.id_dokter).
-            'user_id'       // Local key di tabel perantara `doctors` (doctors.user_id).
-        );
+        return $this->belongsTo(User::class, 'id_dokter', 'id_user');
+    }
+    public function dokterDetail()
+    {
+        return $this->belongsTo(Doctor::class, 'id_dokter', 'id_user');
     }
 
-    // Relasi ke user (pasien) - Ini sudah benar
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user', 'id_user');
@@ -62,6 +51,6 @@ class Consultation extends Model
     // Relasi ke pesan terakhir - Ini sudah benar
     public function pesan_terakhir()
     {
-        return $this->hasOne(Message::class, 'id_konsul', 'id_konsul')->latestOfMany();
+        return $this->hasOne(Pesan::class, 'id_konsul', 'id_konsul')->latestOfMany();
     }
 }

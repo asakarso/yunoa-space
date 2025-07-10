@@ -139,19 +139,12 @@
             {{-- header --}}
             <div class="chat-header flex-row gap-3 align-items-center p-4">
                 <div class="flex gap-3">
-                    <a href="{{ route('counselingList', $dokter->id_user) }}" class="text-dark">
+                    <a href="{{ route('counselingList', auth()->user()->id_user) }}" class="text-dark">
                         <i class="bi bi-arrow-left fs-2"></i>
                     </a>
                     <img src="{{ asset('storage/' . $dokter->foto_profil) }}" alt="Foto Profil" class="foto-profil">    
                 </div>
                 <div>
-                    {{-- debug sementara --}}
-<pre>
-    ID Dokter: {{ $dokter->id_user }}  
-    Nama: {{ $dokter->nama_user }}
-    Roles: {{ implode(', ', $dokter->roles->pluck('nama_role')->toArray()) }}
-</pre>
-
                     <h4 class="fw-bold">{{ $dokter->nama_user }}</h4>
                     <small class="colors-ijo-tua">Online</small>
                 </div>
