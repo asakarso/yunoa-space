@@ -46,7 +46,7 @@ class CounselingController extends Controller
         $payment = Payment::updateOrCreate(
             [
                 'user_id' => $user->id_user,
-                'doctor_id' => $doctorProfile->id,
+                'doctor_id' => $doctorProfile->user_id,
                 'status' => 'pending',
             ],
             [
@@ -58,7 +58,7 @@ class CounselingController extends Controller
             $consultation = Consultation::updateOrCreate(
             [
                 'id_user' => $user->id_user,
-                'id_dokter' => $doctorProfile->id,
+                'id_dokter' => $doctorProfile->user_id,
                 'status' => 'menunggu',
             ],
             [
