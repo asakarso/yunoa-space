@@ -69,6 +69,7 @@ Route::middleware(['auth', 'role:Pengguna'])->group(function () {
     Route::get('/counseling/payment/{doctor_id}', [CounselingController::class, 'showPayment'])->name('counseling.payment');
     Route::post('/counseling/payment/{doctor_id}', [CounselingController::class, 'processPayment'])->name('counseling.processPayment');
     Route::get('/counseling/{userId}', [PesanController::class, 'showList'])->name('counselingList');
+    Route::get('/consultation', [CounselingController::class, 'showDoctors'])->name('consultation');
 
     // === CHAT ===
     Route::get('/chat/{consultId}', [PesanController::class, 'showChat'])->name('chat');

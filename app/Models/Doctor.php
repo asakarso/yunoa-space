@@ -15,7 +15,7 @@ class Doctor extends Model
         'user_id',
         'specialization',
         'schedule',
-        'consultation_price',
+        'consultation_price',   
     ];
 
     /**
@@ -24,6 +24,6 @@ class Doctor extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id_user');
+        return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
 }
