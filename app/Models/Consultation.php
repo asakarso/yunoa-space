@@ -15,6 +15,7 @@ class Consultation extends Model
         'id_konsul',
         'id_user',
         'id_dokter',
+        'id_payment',
         'tanggal_konsultasi',
         'jam_mulai',
         'jam_selesai',
@@ -22,13 +23,11 @@ class Consultation extends Model
         'laporan_hasil'
     ];
 
-    // Akses custom untuk format tanggal
     public function getTanggalKonsultasiFormattedAttribute()
     {
         return Carbon::parse($this->tanggal_konsultasi)->format('d M Y');
     }
 
-    // Relasi ke model Review
     public function review()
     {
         return $this->hasOne(Review::class, 'id_konsul', 'id_konsul');
@@ -38,17 +37,17 @@ class Consultation extends Model
     {
         return $this->belongsTo(User::class, 'id_dokter', 'id_user');
     }
-    public function dokterDetail()
-    {
-        return $this->belongsTo(Doctor::class, 'id_dokter', 'id_user');
-    }
 
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
+
+    public function payment()
+    {
+        return $this->belongsTo(Payment::class, 'id_payment', 'id');
+    }
     
-    // Relasi ke pesan terakhir - Ini sudah benar
     public function pesan_terakhir()
     {
         return $this->hasOne(Pesan::class, 'id_konsul', 'id_konsul')->latestOfMany();

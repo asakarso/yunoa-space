@@ -2,20 +2,16 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\User; 
 use Database\Seeders\UserSeeder;
 use Database\Seeders\RoleSeeder;
-use Database\Seeders\UserRoleSeeder;
 use Database\Seeders\AssessmentSeeder;
 use Database\Seeders\AssesmentQuestionSeeder;
-use Database\Seeders\AnswerChoiceSeeder;
-use Database\Seeders\AssesmentAnswerSeeder;
 use Database\Seeders\UserAnswerSeeder;
+use Database\Seeders\PaymentSeeder;
 use Database\Seeders\ConsultationSeeder;
 use Database\Seeders\ReviewSeeder;
 use Database\Seeders\ArticleSeeder;
 use Database\Seeders\JournalSeeder;
-// use Database\Seeders\CategorySeeder;
 
 
 class DatabaseSeeder extends Seeder
@@ -25,18 +21,15 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             UserSeeder::class,
-            // UserRoleSeeder::class,
             AssessmentSeeder::class,
             AssesmentQuestionSeeder::class,
             UserAnswerSeeder::class,
             DoctorSeeder::class,
+            PaymentSeeder::class,
             ConsultationSeeder::class,
             ReviewSeeder::class,
-            // CategorySeeder::class,
             ArticleSeeder::class,
             JournalSeeder::class,
-            
-
             PesanSeeder::class
         ]);
 

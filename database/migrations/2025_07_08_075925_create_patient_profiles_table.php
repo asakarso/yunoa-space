@@ -14,20 +14,15 @@ return new class extends Migration
         Schema::create('patient_profiles', function (Blueprint $table) {
             $table->id();
 
-           // Tentukan tipe data secara eksplisit agar cocok 
-           // dengan tipe data di tabel users yang dibuat menggunakan increment 
-           // yang menghasilkan integer
-            $table->unsignedInteger('id_user'); // INTEGER, cocok dengan 'increments'
+            $table->unsignedInteger('id_user'); 
 
-            // Kolom-kolom untuk informasi kesejahteraan pasien
             $table->date('tanggal_lahir')->nullable();
             $table->string('jenis_kelamin')->nullable();
             $table->string('aktivitas_utama')->nullable();
-            $table->string('tujuan_menggunakan')->nullable(); //menggunakan aplikasi
+            $table->string('tujuan_menggunakan')->nullable(); 
             $table->string('jam_tidur')->nullable();
             $table->timestamps();
 
-            // Buat foreign key secara manual setelah kolom didefinisikan
             $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');
         });
     }
@@ -40,5 +35,3 @@ return new class extends Migration
         Schema::dropIfExists('patient_profiles');
     }
 };
-
-// untuk melakukan fresh: php artisan migrate:fresh

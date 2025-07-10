@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->decimal('amount', 10, 2);
             $table->string('method');
             $table->string('status')->default('pending');
-            $table->string('snap_token')->nullable();
+            $table->string('order_id');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id_user')->on('users')->onDelete('cascade');

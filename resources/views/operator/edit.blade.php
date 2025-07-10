@@ -42,7 +42,7 @@
         <div class="mb-3">
             <label for="gambar_cover" class="form-label">Cover Image</label><br>
             @if($article->gambar_cover)
-                <img src="{{ asset('storage/' . $article->gambar_cover) }}" alt="Cover" width="150" class="mb-2"><br>
+                <img src="{{ asset('storage/article_covers/' . $article->gambar_cover) }}" alt="Cover" width="150" class="mb-2"><br>
             @endif
             <input type="file" name="gambar_cover" class="form-control">
         </div>
