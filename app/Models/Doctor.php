@@ -19,7 +19,6 @@ class Doctor extends Model
         'schedule',
         'consultation_price',
         'verified_at',
-        // 'rejection_reason' dihapus
     ];
 
     protected $casts = [
@@ -28,6 +27,6 @@ class Doctor extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id_user');
+        return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
 }

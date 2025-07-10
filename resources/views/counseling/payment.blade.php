@@ -79,7 +79,9 @@
     <main class="py-5">
         <div class="container">
             <div class="payment-container shadow-lg">
-
+                <a href="{{ route('consultation') }}" class="btn mb-4" style="background-color: var(--yunoa-light-green); color: var(--yunoa-green); font-weight: 600;">
+                    <i class="bi bi-arrow-left me-2"></i> Kembali ke Konsultasi
+                </a>             
                 <div class="list-header">
                     <h2 class="fw-bold mb-1">Konfirmasi <span class="colors-ijo-tua">Pembayaran</span></h2>
                     <p class="text-muted mb-0">Selesaikan pembayaran untuk memulai sesi konseling Anda.</p>
@@ -125,7 +127,7 @@
             snap.pay('{{ $snapToken }}', {
                 onSuccess: function(result){
                     console.log(result);
-                    window.location.href = "{{ route('counselingList', ['userId' => auth()->id()]) }}?status=success";
+                    window.location.href = "/chat/{{ $consultationId }}";
                 },
                 onPending: function(result){
                     console.log(result);

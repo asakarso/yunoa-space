@@ -97,7 +97,6 @@
                 <div class="consultation-list">
                     @forelse ($konsultasi_list as $konsultasi)
                         @php
-                            // Tentukan siapa lawan bicara
                             $lawanBicara = $konsultasi->id_user == auth()->id() ? $konsultasi->dokter : $konsultasi->user;
                         @endphp
                         

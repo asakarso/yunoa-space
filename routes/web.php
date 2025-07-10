@@ -69,7 +69,7 @@ Route::middleware(['auth', 'role:pengguna'])->group(function () {
     Route::get('/self-assessment/test', [AssessmentController::class, 'showQuestion']);
     Route::post('/self-assessment/store-result', [AssessmentController::class, 'store'])->name('assessment.store');
     Route::get('/self-assessment/result/{asessId}', [AssessmentController::class, 'showResult'])->name('result');
-    Route::get('/consultation', [CounselingController::class, 'showDoctors'])->name('consultation');
+    Route::get('/consultation/add', [CounselingController::class, 'showDoctors'])->name('consultation');
     Route::get('/counseling/payment/{doctor_id}', [CounselingController::class, 'showPayment'])->name('counseling.payment');
     Route::post('/counseling/payment/{doctor_id}', [CounselingController::class, 'processPayment'])->name('counseling.processPayment');
     Route::get('/counseling/list/{userId}', [PesanController::class, 'showList'])->name('counselingList');

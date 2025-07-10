@@ -11,9 +11,6 @@ class Consultation extends Model
 
     protected $primaryKey = 'id_konsul';
 
-    // Set timestamps to false jika tabel tidak memiliki kolom created_at dan updated_at
-    public $timestamps = false;
-
     protected $fillable = [
         'id_konsul',
         'id_user',
@@ -37,15 +34,23 @@ class Consultation extends Model
         return $this->hasOne(Review::class, 'id_konsul', 'id_konsul');
     }
 
-    // Relasi ke dokter (User)
     public function dokter()
     {
         return $this->belongsTo(User::class, 'id_dokter', 'id_user');
     }
+    public function dokterDetail()
+    {
+        return $this->belongsTo(Doctor::class, 'id_dokter', 'id_user');
+    }
 
-    // Relasi ke user (pasien)
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user', 'id_user');
+    }
+    
+    // Relasi ke pesan terakhir - Ini sudah benar
+    public function pesan_terakhir()
+    {
+        return $this->hasOne(Pesan::class, 'id_konsul', 'id_konsul')->latestOfMany();
     }
 }
