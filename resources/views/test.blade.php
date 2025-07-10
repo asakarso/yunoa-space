@@ -94,102 +94,90 @@
             <p>© 2025 Yunoa Space. All rights reserved.</p>
         </div>
     </footer>
-    <? use Illuminate\Support\Facades\Auth; ?>
     <script>
-        const userId = <?= json_encode(Auth::id()) ?>;
+        const userId = {{ auth()->user()->id_user ?? 'null' }};
         const now = new Date();
         const tanggal = now.toISOString().slice(0, 10);
         const waktu = now.toTimeString().slice(0, 8);
-
-        console.log('ID:', userId); 
-        console.log('Tanggal:', tanggal); // contoh: 2025-05-25
-        console.log('Waktu:', waktu);     // contoh: 09:00:00
-
-        const pertanyaan = <?= json_encode($pertanyaan) ?>;
-
+        const pertanyaan = @json($pertanyaan);
+        const jawaban = [];
         let indexPertanyaan = 0;
-        const btnPrev = document.getElementById("buttonPrev");
+
         const pertanyaanField = document.querySelector(".pertanyaan");
-        pertanyaanField.textContent = pertanyaan[0];
+        const btnPrev = document.getElementById("buttonPrev");
+        const btnNext = document.getElementById("buttonNext");
+        const btnSubmit = document.getElementById("buttonSubmit");
+        const errMsg = document.getElementById('errMsg');
 
-        function changeElement(index){
+        let isSubmitting = false;
+
+        const handleBeforeUnload = function (e) {
+            if (!isSubmitting) {
+                e.preventDefault();
+                e.returnValue = ''; 
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        function changeElement(index) {
             pertanyaanField.textContent = pertanyaan[index];
+            btnPrev.classList.toggle("invisible", index <= 0);
 
-            if (index > 0 ){
-                btnPrev.classList.remove("invisible");
-            } else {
-                btnPrev.classList.add("invisible");
-            }
+            const savedAnswer = jawaban[index];
+            document.querySelectorAll('input[name="answer"]').forEach(choice => {
+                choice.checked = (choice.value == savedAnswer);
+            });
 
-            if(jawaban[indexPertanyaan] != undefined){
-                document.querySelectorAll('input[name="answer"]').forEach((choice)=>{
-                    if(choice.value == jawaban[indexPertanyaan]){
-                        choice.checked = true;
-                    }
-                });
-            } else {
-                document.querySelectorAll('input[name="answer"]').forEach((choice)=>{
-                    choice.checked = false;
-                });
-            }
-
-            if(indexPertanyaan==pertanyaan.length-1){
-                document.getElementById("buttonSubmit").classList.remove("d-none");
-                document.getElementById("buttonNext").classList.add("d-none");
-            } else {
-                document.getElementById("buttonSubmit").classList.add("d-none");
-                document.getElementById("buttonNext").classList.remove("d-none");
-            }
+            btnSubmit.classList.toggle("d-none", index < pertanyaan.length - 1);
+            btnNext.classList.toggle("d-none", index >= pertanyaan.length - 1);
         }
 
-        const jawaban = [];
-
-        document.querySelectorAll('input[name="answer"]').forEach((choice)=>{
-            choice.addEventListener("change", function(){
-                if(choice.checked){
-                    jawaban[indexPertanyaan] = choice.value;
+        document.querySelectorAll('input[name="answer"]').forEach(choice => {
+            choice.addEventListener("change", function() {
+                if (this.checked) {
+                    jawaban[indexPertanyaan] = this.value;
+                    errMsg.classList.add("invisible");
                 }
-
-                document.getElementById('errMsg').classList.add("invisible");
             });
         });
 
-        const btnNext = document.getElementById("buttonNext");
-        btnNext.addEventListener("click", function(ev){
-            if(jawaban[indexPertanyaan]==undefined){
-                ev.preventDefault();
-                document.getElementById('errMsg').classList.remove("invisible");
+        btnNext.addEventListener("click", function(ev) {
+            ev.preventDefault();
+            if (jawaban[indexPertanyaan] === undefined) {
+                errMsg.classList.remove("invisible");
             } else {
                 indexPertanyaan++;
                 changeElement(indexPertanyaan);
             }
         });
-        
-        btnPrev.addEventListener("click", function(){
+
+        btnPrev.addEventListener("click", function(ev) {
+            ev.preventDefault();
             indexPertanyaan--;
             changeElement(indexPertanyaan);
-            document.getElementById('errMsg').classList.add("invisible");
+            errMsg.classList.add("invisible");
         });
 
-        const btnSubmit = document.getElementById("buttonSubmit");
-        btnSubmit.addEventListener("click", function(ev){
-            if(jawaban[indexPertanyaan]==undefined){
-                ev.preventDefault();
-                document.getElementById('errMsg').classList.remove("invisible");
-                console.log('jawaban:', jawaban); 
-            } else {
-                document.getElementById('errMsg').classList.add("invisible");
-                const waktuSubmit = new Date().toTimeString().slice(0, 8);;
-                console.log(waktuSubmit);
-                let skor = 0;
-                jawaban.forEach(jawab => {
-                    skor += Number(jawab); 
-                });
+        btnSubmit.addEventListener("click", function(ev) {
+            ev.preventDefault();
+            if (jawaban[indexPertanyaan] === undefined) {
+                errMsg.classList.remove("invisible");
+                return;
+            }
+
+            if (confirm("Are you sure you want to submit your assessment? This action cannot be undone.")) {
+               
+                isSubmitting = true;
+                
+                errMsg.classList.add("invisible");
+                const waktuSubmit = new Date().toTimeString().slice(0, 8);
+                let skor = jawaban.reduce((total, jawab) => total + Number(jawab), 0);
 
                 btnSubmit.disabled = true;
-                btnSubmit.textContent = 'Submitting...';
+                btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...';
 
-                fetch("{{ url('/self-assessment/store-result') }}", {
+                fetch("{{ route('assessment.store') }}", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -206,29 +194,28 @@
                     })
                 })
                 .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
+                    if (!response.ok) return response.json().then(err => { throw err; });
                     return response.json();
                 })
                 .then(data => {
-                    if (data && data.redirect_url) {
-                        window.location.href = data.redirect_url; 
+                    if (data.redirect_url) {
+                        window.location.href = data.redirect_url;
                     } else {
-                        console.log("Sukses, tapi tidak ada URL redirect:", data);
-                        alert(`Assessment berhasil disimpan! Skor Anda: ${data.score}. Halaman tidak dialihkan.`);
-                        btnSubmit.textContent = 'Submitted';
+                        console.error("Server tidak mengirimkan URL redirect.", data);
+                        isSubmitting = false; 
                     }
                 })
                 .catch(error => {
-                    console.error("Error:", error);
+                    console.error("Error submitting assessment:", error);
+                    alert("Failed to submit assessment. Please try again.");
+                    btnSubmit.disabled = false;
+                    btnSubmit.textContent = 'Submit';
+                    isSubmitting = false; 
                 });
             }
-            
         });
 
-        window.addEventListener('beforeunload', function (e) {
-            e.preventDefault();
-            e.returnValue = '';
-        });
+        changeElement(0);
     </script>
 </body>
 </html>

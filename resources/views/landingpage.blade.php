@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yunoa Space</title>
     <!-- CSS -->
-    <link rel="stylesheet" href="../../public/landing-page/style.css">
+    <!-- <link rel="stylesheet" href="../../public/landing-page/style.css"> -->
     @vite(['resources/css/app.css', 'resources/css/landingpage.css'])
 </head>
 

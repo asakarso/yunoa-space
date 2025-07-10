@@ -2,131 +2,144 @@
 
 @section('content')
 <style>
-    :root {
-      --primary-green: #6BB99F;
-      --dark-green: #0F5A4A;
-      --light-gray-border: #d4d4d4;
-      --dark-text: #1e1e1e;
+    body, html {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 2rem 0;
+        background-color: #e8f5f1;
     }
-
-    .form-container-custom {
-      font-family: 'Poppins', sans-serif;
-      color: var(--dark-text);
+    .register-container {
+        background-color: white;
+        padding: 2.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        width: 100%;
+        max-width: 900px; 
     }
-    
-    .form-title .colors-ijo {
-      color: var(--primary-green);
-      font-weight: 600;
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label {
+        font-weight: 600;
+        color: #333;
+        display: block;
+        margin-bottom: 0.5rem;
     }
-    
-    /* Styling untuk Input dan Label */
-    .form-container-custom label {
-      font-weight: bold;
-      color: var(--dark-text);
-      display: block;
-      margin-bottom: 4px;
+    .form-group .form-control, .form-group .form-select {
+        border: 1px solid #e0e0e0;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        width: 100%;
     }
-
-    .form-container-custom input[type="text"],
-    .form-container-custom input[type="email"],
-    .form-container-custom input[type="password"] {
-      margin-bottom: 8px;
-      border: 1px solid var(--light-gray-border);
-      border-radius: 4px;
-      padding: 10px 16px;
-      width: 100%;
+    .gender-option input[type="radio"] { display: none; }
+    .gender-option .card-option {
+        border: 2px solid #e0e0e0;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
     }
-
-    .form-container-custom input:focus {
-      outline: none;
-      border: 2px solid var(--primary-green);
+    .gender-option input[type="radio"]:checked + .card-option {
+        border-color: #4fcfb1;
+        background-color: #d9faee;
     }
-    
-    /* Styling untuk Tombol Submit */
+    .gender-option img {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 0.5rem;
+    }
     .btn-submit-custom {
-      background-color: var(--primary-green);
+      background-color: #4fcfb1;
       color: white;
       font-weight: bold;
-      border-radius: 4px;
-      padding: 10px;
+      border-radius: 0.5rem;
+      padding: 0.85rem;
       width: 100%;
       border: none;
-      transition: background-color 0.2s ease-in-out;
     }
-
-    .btn-submit-custom:hover {
-      background-color: rgb(54, 146, 115);
-    }
-
-    .btn-submit-custom:active {
-      background-color: var(--dark-green);
-    }
-
-    /* Styling untuk pesan error validasi */
-    .validation-error {
-        color: red;
-        font-size: 0.875em;
-        display: block;
-        margin-bottom: 1rem;
-    }
+    .btn-submit-custom:hover { background-color: #0f5a4a; }
 </style>
 
-<div class="row justify-content-center">
-    <div class="col-md-6 form-container-custom">
-        <h1 class="text-center my-4 form-title">Register to <span class="colors-ijo">Join Our Space</span></h1><br>
+<div class="register-container">
+    <h2 class="text-center mb-4 fw-bold colors-ijo-tua">Create Your Account</h2>
 
-        <form method="POST" action="{{ route('register') }}" class="mb-5">
-            @csrf
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-            
-            <div class="mb-2">
-                <label for="nama_user">Nama Lengkap</label>
-                <input id="nama_user" type="text" name="nama_user" value="{{ old('nama_user') }}" placeholder="Masukkan nama lengkap anda" required>
-                @error('nama_user')
-                    <small class="validation-error">{{ $message }}</small>
-                @enderror
+    <form method="POST" action="{{ route('register') }}">
+        @csrf
+        
+        <div class="form-group">
+            <label for="nama_user">Full Name</label>
+            <input id="nama_user" type="text" class="form-control" name="nama_user" placeholder="Enter your full name" value="{{ old('nama_user') }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="tanggal_lahir">Date of Birth</label>
+            <input id="tanggal_lahir" class="form-control" type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Gender</label>
+            <div class="row g-3 mt-1">
+                <div class="col gender-option">
+                    <label for="laki-laki">
+                        <input type="radio" id="laki-laki" name="jenis_kelamin" value="Laki-Laki" {{ old('jenis_kelamin') == 'Laki-Laki' ? 'checked' : '' }} required>
+                        <div class="card-option">
+                            <img src="{{ asset('storage/kelamin/1.png') }}" alt="Male">
+                            <span class="fw-bold">Male</span>
+                        </div>
+                    </label>
+                </div>
+                <div class="col gender-option">
+                    <label for="perempuan">
+                        <input type="radio" id="perempuan" name="jenis_kelamin" value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'checked' : '' }}>
+                        <div class="card-option">
+                            <img src="{{ asset('storage/kelamin/2.png') }}" alt="Female">
+                            <span class="fw-bold">Female</span>
+                        </div>
+                    </label>
+                </div>
             </div>
+        </div>
 
-          
-            <div class="mb-2">
-                <label for="nomor_telepon">Nomor Telepon</label>
-                <input id="nomor_telepon" type="text" name="nomor_telepon" value="{{ old('nomor_telepon') }}" placeholder="Masukkan nomor telepon anda" required>
-                @error('nomor_telepon')
-                    <small class="validation-error">{{ $message }}</small>
-                @enderror
-            </div>
+        <div class="form-group">
+            <label for="nomor_telepon">Phone Number</label>
+            <input id="nomor_telepon" type="tel" class="form-control" name="nomor_telepon" placeholder="e.g., 08123456789" value="{{ old('nomor_telepon') }}" required>
+        </div>
 
-            
-            <div class="mb-2">
-                <label for="email_user">Email</label>
-                <input id="email_user" type="email" name="email_user" value="{{ old('email_user') }}" placeholder="Masukkan email anda" required>
-                @error('email_user')
-                    <small class="validation-error">{{ $message }}</small>
-                @enderror
-            </div>
+        <div class="form-group">
+            <label for="email_user">Email Address</label>
+            <input id="email_user" type="email" class="form-control" name="email_user" placeholder="Enter your email" value="{{ old('email_user') }}" required>
+        </div>
 
-           
-            <div class="mb-2">
-                <label for="pass_user">Password</label>
-                <input id="pass_user" type="password" name="pass_user" placeholder="Masukkan password anda" required>
-                @error('pass_user')
-                    <small class="validation-error">{{ $message }}</small>
-                @enderror
-            </div>
+        <div class="form-group">
+            <label for="pass_user">Password</label>
+            <input id="pass_user" type="password" class="form-control" name="pass_user" placeholder="Create a password (min. 8 characters)" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="pass_user_confirmation">Confirm Password</label>
+            <input id="pass_user_confirmation" class="form-control" type="password" name="pass_user_confirmation" placeholder="Repeat your password" required>
+        </div>
 
-            
-            <div class="mb-2">
-                <label for="pass_user_confirmation">Konfirmasi Password</label>
-                <input id="pass_user_confirmation" type="password" name="pass_user_confirmation" placeholder="Masukkan ulang password anda" required>
-            </div>
-
-           
-            <div class="mt-4">
-                <button type="submit" class="btn-submit-custom">
-                    Daftar
-                </button>
-            </div>
-        </form>
-    </div>
+        <div class="mt-4">
+            <button type="submit" class="btn-submit-custom">Register</button>
+        </div>
+        
+        <p class="text-center text-muted mt-3 mb-0">
+            Already have an account? <a href="{{ route('login') }}" class="colors-ijo-tua fw-bold">Login here</a>.
+            <br>
+            Are you a professional? <a href="{{ route('register.doctor') }}" class="colors-ijo-tua fw-bold">Register as a Doctor</a>.
+        </p>
+    </form>
 </div>
 @endsection

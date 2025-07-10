@@ -14,14 +14,18 @@ class Doctor extends Model
     protected $fillable = [
         'user_id',
         'specialization',
+        'education',
+        'str_sip_file',
         'schedule',
         'consultation_price',
+        'verified_at',
+        // 'rejection_reason' dihapus
     ];
 
-    /**
-     * Mendapatkan data user yang memiliki profil dokter ini.
-     * relasi inverse dari One-to-One (belongsTo).
-     */
+    protected $casts = [
+        'verified_at' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id_user');
