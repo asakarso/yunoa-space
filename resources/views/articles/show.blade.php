@@ -79,7 +79,8 @@
                                     <img src="{{ asset('storage/article_covers/' . $related->gambar_cover) }}" alt="{{ $related->judul_artikel }}">
                                     <div>
                                         <p class="fw-bold mb-1">{{ $related->judul_artikel }}</p>
-                                        <small class="text-muted">Kesehatan • 5 menit</small>
+                                        {{-- <small class="text-muted">Kesehatan • 5 menit</small> --}}
+                                        <small class="text-muted">{{ $related->kategori }}</small>
                                     </div>
                                 </a>
                             @empty

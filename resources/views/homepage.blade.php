@@ -73,26 +73,26 @@
                 <p class="lh-lg my-4">Discover our features designed to support your mental health journey. From self-assessments to expert consultations, our platform provides the resources you need to achieve balance and well-being.</p>
             </div>
             <div class="features text-center mb-5">
-                <div>
+                <a href="{{ url('/self-assessment') }}" class="feature-card text-decoration-none text-dark">
                     <h5 class="fw-semibold">Self-Assessment</h5>
                     <img src="{{ asset('landing-page/self-assessment.png') }}" class="w-50 mb-2" />
                     <p>Evaluate your mental well-being with a quick self-assessment.</p>
-                </div>
-                <div>
+                </a>
+                 <a href="{{ url('/counseling/list/{userId}') }}" class="text-decoration-none text-dark">
                     <h5 class="fw-semibold">Consultation</h5>
                     <img src="{{ asset('landing-page/consultant.png') }}" class="w-50 mb-2" />
                     <p>Connect with professional experts for personalized support.</p>
-                </div>
-                <div>
+                 </a>
+                 <a href="{{ url('/articles') }}" class="text-decoration-none text-dark">
                     <h5 class="fw-semibold">Education</h5>
                     <img src="{{ asset('landing-page/articles.png') }}" class="w-50 mb-2" />
                     <p>Access articles to improve your mental health awareness.</p>
-                </div>
-                <div>
+                 </a>
+                 <a href="{{ url('/journals') }}" class="text-decoration-none text-dark">
                     <h5 class="fw-semibold">Daily Gratitude</h5>
                     <img src="{{ asset('landing-page/gratitude.png') }}" class="w-50 mb-2" />
                     <p>Love yourself by journaling & enhancing emotional resilience.</p>
-                </div>
+                 </a>
             </div>
         </div>
 

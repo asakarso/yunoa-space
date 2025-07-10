@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <nav class="container mt-4 d-flex justify-content-between">
+    {{-- <nav class="container mt-4 d-flex justify-content-between">
         <a class="navbar-brand" href="#">
             <img src="{{ asset('landing-page/logo.png') }}" alt="Yunoa Space" width="160px">
         </a>
@@ -23,6 +23,29 @@
             <a class="nav-link link-secondary" href="#review">Reviews</a>
             <a class="login px-4" href="{{ url('/login')}}" role="button">Log In</a>
         </div>
+    </nav> --}}
+    <nav class="container mt-4 d-flex justify-content-between">
+        <a class="navbar-brand" href="#">
+            <img src="{{ asset('landing-page/logo.png') }}" alt="Yunoa Space" width="160px">
+        </a>
+
+        <div class="d-flex gap-5 align-items-center colors-ijo-tua">
+            <a class="nav-link link-secondary" href="#about-us">About Us</a>
+            <a class="nav-link link-secondary" href="#feature">Feature</a>
+            <a class="nav-link link-secondary" href="#specialists">Specialists</a>
+            <a class="nav-link link-secondary" href="#review">Reviews</a>
+
+            {{-- Gunakan @auth dan @guest untuk mengubah tombol LOGIN --}}
+            @guest
+                {{-- TAMPILKAN INI JIKA PENGGUNA/PASIEN BELUM LOGIN --}}
+                <a class="login px-4" href="{{ url('/login')}}" role="button">Log In</a>
+            @endguest
+
+            @auth
+                {{-- TAMPILKAN INI JIKA PENGGUNA SUDAH LOGIN --}}
+                <a class="login px-4" href="{{ url('/profile')}}" role="button">Profile</a>
+            @endauth
+        </div>
     </nav>
 
     <header class="hero container mt-5">
@@ -32,7 +55,17 @@
                 <p class="tagline">No.1 Platform for Mental Consulting</p>
                 <h1 class="fw-bold mb-3"> Your Trusted Partner <br> for Mental Health Support</h1>
                 <p class="mb-4">We are here to help you find peace, balance, and happiness in life. Begin your journey toward better mental health with us.</p>
-                <a href="{{ route('register') }}" class="px-4">Sign Up Now</a>
+                {{-- <a href="{{ route('register') }}" class="px-4">Sign Up Now</a> --}}
+                        {{-- Gunakan @auth dan @guest untuk mengubah tombol --}}
+                @guest
+                    {{-- TAMPILKAN INI JIKA PENGGUNA BELUM LOGIN --}}
+                    <a href="{{ route('register') }}" class="px-4">Sign Up Now</a>
+                @endguest
+
+                @auth
+                    {{-- TAMPILKAN INI JIKA PENGGUNA SUDAH LOGIN --}}
+                    <a class="login px-4" href="#feature" role="button">Start Now</a>
+                @endauth
             </div>
 
             <!-- Kolom Kanan (Gambar) -->
@@ -85,26 +118,26 @@
                 <p class="lh-lg my-4">Discover our features designed to support your mental health journey. From self-assessments to expert consultations, our platform provides the resources you need to achieve balance and well-being.</p>
             </div>
             <div class="features text-center mb-5">
-                <div>
+                <a href="{{ url('/self-assessment') }}" class="feature-card text-decoration-none text-dark">
                     <h5 class="fw-semibold">Self-Assessment</h5>
                     <img src="{{ asset('landing-page/self-assessment.png') }}" class="w-50 mb-2" />
                     <p>Evaluate your mental well-being with a quick self-assessment.</p>
-                </div>
-                <div>
+                </a>
+                 <a href="{{ url('/counseling/list/{userId}') }}" class="text-decoration-none text-dark">
                     <h5 class="fw-semibold">Consultation</h5>
                     <img src="{{ asset('landing-page/consultant.png') }}" class="w-50 mb-2" />
                     <p>Connect with professional experts for personalized support.</p>
-                </div>
-                <div>
+                 </a>
+                 <a href="{{ url('/articles') }}" class="text-decoration-none text-dark">
                     <h5 class="fw-semibold">Education</h5>
                     <img src="{{ asset('landing-page/articles.png') }}" class="w-50 mb-2" />
                     <p>Access articles to improve your mental health awareness.</p>
-                </div>
-                <div>
+                 </a>
+                 <a href="{{ url('/journals') }}" class="text-decoration-none text-dark">
                     <h5 class="fw-semibold">Daily Gratitude</h5>
                     <img src="{{ asset('landing-page/gratitude.png') }}" class="w-50 mb-2" />
                     <p>Love yourself by journaling & enhancing emotional resilience.</p>
-                </div>
+                 </a>
             </div>
         </div>
 
