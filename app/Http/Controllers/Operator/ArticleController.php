@@ -30,7 +30,7 @@ class ArticleController extends Controller
     // Simpan artikel baru
     public function store(Request $request)
     {
-        // 1. Hapus validasi tanggal dan waktu
+        
         $request->validate([
             'judul_artikel' => 'required|string|max:255',
             'konten_artikel' => 'required',
@@ -43,7 +43,7 @@ class ArticleController extends Controller
             $path = $request->file('gambar_cover')->store('artikel', 'public');
         }
 
-        // 2. Tambahkan tanggal dan waktu secara otomatis menggunakan now()
+        // Tambahkan tanggal dan waktu secara otomatis menggunakan now()
         Article::create([
             'judul_artikel' => $request->judul_artikel,
             'tanggal_artikel' => now(), // Otomatis
