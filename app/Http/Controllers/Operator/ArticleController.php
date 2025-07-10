@@ -14,7 +14,7 @@ class ArticleController extends Controller
     public function index()
     {
         $operatorId = Auth::id();
-        $articles = Article::where('operator_id', $operatorId)
+        $articles = Article::where('operator_id', '=', $operatorId) // Perubahan disini !== jadi tidak akan menampilkan artikel yang sedang login 
                          ->latest('updated_at') 
                            ->get();
 
@@ -30,13 +30,12 @@ class ArticleController extends Controller
     // Simpan artikel baru
     public function store(Request $request)
     {
+        // 1. Hapus validasi tanggal dan waktu
         $request->validate([
             'judul_artikel' => 'required|string|max:255',
-            'tanggal_artikel' => 'required|date',
-            'waktu_artikel' => 'required',
             'konten_artikel' => 'required',
             'gambar_cover' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'status' => 'required|in:draft,published',
+            'status' => 'required|in:draft,published', // Status tetap divalidasi dari tombol
         ]);
 
         $path = null;
@@ -44,14 +43,15 @@ class ArticleController extends Controller
             $path = $request->file('gambar_cover')->store('artikel', 'public');
         }
 
+        // 2. Tambahkan tanggal dan waktu secara otomatis menggunakan now()
         Article::create([
             'judul_artikel' => $request->judul_artikel,
-            'tanggal_artikel' => $request->tanggal_artikel,
-            'waktu_artikel' => $request->waktu_artikel,
+            'tanggal_artikel' => now(), // Otomatis
+            'waktu_artikel' => now(),   // Otomatis
             'operator_id' => Auth::id(),
             'konten_artikel' => $request->konten_artikel,
             'gambar_cover' => $path,
-            'status' => $request->status,
+            'status' => $request->status, // Ambil status dari tombol yang ditekan
         ]);
 
         return redirect()->route('operator.articles.index')->with('success', 'Article added successfully!');
@@ -62,7 +62,6 @@ class ArticleController extends Controller
     {
         $article = Article::findOrFail($id);
 
-        // Validasi kepemilikan
         if ($article->operator_id !== Auth::id()) {
             abort(403);
         }
@@ -79,35 +78,35 @@ class ArticleController extends Controller
             abort(403);
         }
 
+        // 1. Hapus validasi tanggal dan waktu
         $request->validate([
             'judul_artikel' => 'required|string|max:255',
-            'tanggal_artikel' => 'required|date',
-            'waktu_artikel' => 'required',
             'konten_artikel' => 'required',
             'gambar_cover' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'status' => 'required|in:draft,published',
+            'status' => 'required|in:draft,published', // Status tetap divalidasi dari tombol
         ]);
+
+        $dataToUpdate = [
+            'judul_artikel' => $request->judul_artikel,
+            'konten_artikel' => $request->konten_artikel,
+            'status' => $request->status,
+            'tanggal_artikel' => now(), // 2. Selalu perbarui tanggal & waktu ke saat ini
+            'waktu_artikel' => now(),   // 2. Selalu perbarui tanggal & waktu ke saat ini
+        ];
 
         if ($request->hasFile('gambar_cover')) {
             if ($article->gambar_cover) {
                 Storage::disk('public')->delete($article->gambar_cover);
             }
-            $article->gambar_cover = $request->file('gambar_cover')->store('artikel', 'public');
+            $dataToUpdate['gambar_cover'] = $request->file('gambar_cover')->store('artikel', 'public');
         }
 
-        $article->update([
-            'judul_artikel' => $request->judul_artikel,
-            'tanggal_artikel' => $request->tanggal_artikel,
-            'waktu_artikel' => $request->waktu_artikel,
-            'konten_artikel' => $request->konten_artikel,
-            'status' => $request->status,
-            'gambar_cover' => $article->gambar_cover,
-        ]);
+        $article->update($dataToUpdate);
 
         return redirect()->route('operator.articles.index')->with('success', 'Artikel berhasil diperbarui!');
     }
 
-    // 6. Hapus artikel
+    // Hapus artikel
     public function destroy($id)
     {
         $article = Article::findOrFail($id);

@@ -7,45 +7,52 @@ use App\Models\Article;
 
 class ArticleController extends Controller
 {
+    /**
+     * Menampilkan halaman utama artikel (terpopuler, terbaru, dll.)
+     */
     public function index(Request $request)
     {
-        $baseQuery = Article::query();
+        //  Mulai query hanya untuk artikel yang sudah 'published'
+        $baseQuery = Article::where('status', 'published');
 
-        // Logika untuk menangani pencarian
         if ($request->has('search') && $request->search != '') {
-            $baseQuery->where('judul_artikel', 'like', '%' . $request->search . '%')
-                  ->orWhere('konten_artikel', 'like', '%' . $request->search . '%');
+            $baseQuery->where(function ($query) use ($request) {
+                $query->where('judul_artikel', 'like', '%' . $request->search . '%')
+                      ->orWhere('konten_artikel', 'like', '%' . $request->search . '%');
+            });
         }
 
-        // --- 1. Ambil Artikel Terpopuler (berdasarkan view_count) ---
-        $popularQuery = clone $baseQuery; // Clone agar tidak mengganggu query selanjutnya
+        // --- Ambil Artikel Terpopuler ---
+        $popularQuery = clone $baseQuery; 
         $popularArticles = $popularQuery->orderBy('view_count', 'desc')->take(5)->get();
-
-        // Ambil artikel pertama sebagai artikel utama, sisanya untuk daftar samping
-        $mainArticle = $popularArticles->first(); // Ambil 1 artikel teratas
-        $sideArticles = $popularArticles->slice(1, 4); // Ambil 4 artikel berikutnya untuk samping
-
-        // Ambil ID dari artikel populer agar tidak muncul lagi di "Artikel Terbaru"
+        $mainArticle = $popularArticles->first();
+        $sideArticles = $popularArticles->slice(1, 4); 
         $popularArticleIds = $popularArticles->pluck('id_review')->toArray();
 
-        // --- 2. Ambil Artikel Terbaru (berdasarkan tanggal) ---
+        // --- Ambil Artikel Terbaru ---
         $latestArticlesQuery = clone $baseQuery;
-        $latestArticles = $latestArticlesQuery->whereNotIn('id_review', $popularArticleIds) // Jangan tampilkan yang sudah populer
-                                            ->orderBy('tanggal_artikel', 'desc')      // Urutkan dari yang paling BARU
-                                            ->take(6)                                 // Ambil 6 untuk mengisi grid
+        $latestArticles = $latestArticlesQuery->whereNotIn('id_review', $popularArticleIds)
+                                            ->latest('tanggal_artikel')
+                                            ->take(6)
                                             ->get();
 
         return view('articles.index', compact('mainArticle', 'sideArticles', 'latestArticles'));
     }
 
+    /**
+     * Menampilkan detail satu artikel
+     */
     public function show($id)
     {
-        $article = Article::findOrFail($id);
+        // Cari artikel HANYA jika statusnya 'published'
+        $article = Article::where('status', 'published')->findOrFail($id);
+        
+        // Naikkan view count setelah artikel ditemukan
         $article->increment('view_count');
 
-        // Ambil 5 artikel lain secara acak sebagai artikel terkait
-        // Pastikan untuk tidak mengambil artikel yang sedang dibuka
-        $relatedArticles = Article::where('id_review', '!=', $id)
+        //  Ambil artikel terkait yang statusnya juga 'published'
+        $relatedArticles = Article::where('status', 'published')
+                                ->where('id_review', '!=', $id)
                                 ->inRandomOrder()
                                 ->take(5)
                                 ->get();
@@ -53,24 +60,28 @@ class ArticleController extends Controller
         return view('articles.show', compact('article', 'relatedArticles'));
     }
 
-
+    /**
+     * Menampilkan halaman "Lihat Semua" artikel dengan paginasi
+     */
     public function all(Request $request)
     {
-        $query = Article::query();
+        // Mulai query hanya untuk artikel yang sudah 'published'
+        $query = Article::where('status', 'published');
 
         // LOGIKA Untuk Menangani kata kunci pencarian
         if ($request->has('search') && $request->search != '') {
-        $query->where('judul_artikel', 'like', '%' . $request->search . '%')
-              ->orWhere('konten_artikel', 'like', '%' . $request->search . '%');
+            $query->where(function ($q) use ($request) {
+                $q->where('judul_artikel', 'like', '%' . $request->search . '%')
+                  ->orWhere('konten_artikel', 'like', '%' . $request->search . '%');
+            });
         }
 
-        // Logika ini membuat halaman "Lihat Semua" juga bisa difilter
+        // Logika untuk filter kategori
         if ($request->has('kategori') && $request->kategori != '') {
             $query->where('kategori', $request->kategori);
         }
 
-        // Mengurutkan berdasarkan tanggal terbaru dan membaginya per halaman (9 artikel per halaman)
-        $articles = $query->orderBy('tanggal_artikel', 'desc')->paginate(9);
+        $articles = $query->latest('tanggal_artikel')->paginate(9);
 
         return view('articles.all', compact('articles'));
     }
