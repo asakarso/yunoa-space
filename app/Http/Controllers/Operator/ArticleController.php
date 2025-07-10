@@ -15,8 +15,8 @@ class ArticleController extends Controller
     {
         $operatorId = Auth::id();
         $articles = Article::where('operator_id', '=', $operatorId) // Perubahan disini !== jadi tidak akan menampilkan artikel yang sedang login 
-                         ->latest('updated_at') 
-                           ->get();
+            ->latest('updated_at')
+            ->get();
 
         return view('operator.index', compact('articles'));
     }
@@ -30,7 +30,7 @@ class ArticleController extends Controller
     // Simpan artikel baru
     public function store(Request $request)
     {
-        
+
         $request->validate([
             'judul_artikel' => 'required|string|max:255',
             'konten_artikel' => 'required',
@@ -38,9 +38,9 @@ class ArticleController extends Controller
             'status' => 'required|in:draft,published', // Status tetap divalidasi dari tombol
         ]);
 
-        $path = null;
         if ($request->hasFile('gambar_cover')) {
-            $path = $request->file('gambar_cover')->store('artikel', 'public');
+            $filename = $request->file('gambar_cover')->getClientOriginalName();
+            $request->file('gambar_cover')->storeAs('article_covers', $filename, 'public');
         }
 
         // Tambahkan tanggal dan waktu secara otomatis menggunakan now()
@@ -50,7 +50,7 @@ class ArticleController extends Controller
             'waktu_artikel' => now(),   // Otomatis
             'operator_id' => Auth::id(),
             'konten_artikel' => $request->konten_artikel,
-            'gambar_cover' => $path,
+            'gambar_cover' => $filename,
             'status' => $request->status, // Ambil status dari tombol yang ditekan
         ]);
 

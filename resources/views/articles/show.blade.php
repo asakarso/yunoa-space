@@ -59,7 +59,7 @@
                     </p>
 
                     {{-- Gambar Cover Artikel --}}
-                    <img src="{{ asset('storage/' . $article->gambar_cover) }}" class="img-fluid rounded-3 mb-4 shadow-sm" alt="{{ $article->judul_artikel }}">
+                    <img src="{{ asset('storage/article_covers/' . $article->gambar_cover) }}" class="img-fluid rounded-3 mb-4 shadow-sm" alt="{{ $article->judul_artikel }}">
                     {{-- Isi Konten Artikel --}}
                     <div class="article-content" style="font-size: 1.1rem; line-height: 1.8;">
                         {!! $article->konten_artikel !!}
@@ -75,7 +75,7 @@
                         <div class="d-flex flex-column gap-3">
                             @forelse ($relatedArticles as $related)
                                 <a href="{{ route('articles.show', $related->id_review) }}" class="side-article-item">
-                                    <img src="{{ asset('storage/' . $related->gambar_cover) }}" alt="{{ $related->judul_artikel }}">
+                                    <img src="{{ asset('storage/article_covers/' . $related->gambar_cover) }}" alt="{{ $related->judul_artikel }}">
                                     <div>
                                         <p class="fw-bold mb-1">{{ $related->judul_artikel }}</p>
                                         <small class="text-muted">Kesehatan • 5 menit</small>

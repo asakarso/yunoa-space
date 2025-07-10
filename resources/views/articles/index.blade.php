@@ -56,7 +56,7 @@
                 <h4 class="fw-bold mb-3">Artikel Terpopuler</h4>
                 @if($mainArticle)
                     <a href="{{ route('articles.show', $mainArticle->id_review) }}" class="main-article-card">
-                    <img src="{{ asset('storage/' . $mainArticle->gambar_cover) }}" alt="{{ $mainArticle->judul_artikel }}">
+                    <img src="{{ asset('storage/article_covers/' . $mainArticle->gambar_cover) }}" alt="{{ $mainArticle->judul_artikel }}">
                     <div class="card-body"> 
                 <h3 class="fw-bold">{{ $mainArticle->judul_artikel }}</h3>
                 <p class="text-secondary">{{ Str::limit(strip_tags($mainArticle->konten_artikel), 150) }}</p>
@@ -72,7 +72,7 @@
                 <div class="d-flex flex-column gap-3 mt-5 mt-lg-0 pt-lg-5">
                     @forelse ($sideArticles as $article)
                         <a href="{{ route('articles.show', $article->id_review) }}" class="side-article-item">
-                        <img src="{{ asset('storage/' . $article->gambar_cover) }}" alt="{{ $article->judul_artikel }}">
+                        <img src="{{ asset('storage/article_covers/' . $article->gambar_cover) }}" alt="{{ $article->judul_artikel }}">
                             <div>
                                 <p class="fw-bold mb-1">{{ $article->judul_artikel }}</p>
                                 {{-- <small class="text-muted">Kecemasan • 5 menit</small> --}}
@@ -96,7 +96,7 @@
                 @forelse ($latestArticles as $article)
                     <div class="col-md-6 col-lg-4">
                         <a href="{{ route('articles.show', $article->id_review) }}" class="latest-article-card">
-                        <img src="{{ asset('storage/' . $article->gambar_cover) }}" alt="{{ $article->judul_artikel }}">
+                        <img src="{{ asset('storage/article_covers/' . $article->gambar_cover) }}" alt="{{ $article->judul_artikel }}">
                             <div class="card-body">
                                 <h5 class="card-title">{{ $article->judul_artikel }}</h5>
                                 <p class="card-text mt-2">{{ Str::limit($article->konten_artikel, 100) }}</p>
