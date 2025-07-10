@@ -27,17 +27,7 @@
             <input type="text" name="judul_artikel" class="form-control" value="{{ old('judul_artikel') }}" required>
         </div>
 
-        {{-- Date and Time side-by-side --}}
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="tanggal_artikel" class="form-label">Date</label>
-                <input type="date" name="tanggal_artikel" class="form-control" value="{{ old('tanggal_artikel') }}" required>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="waktu_artikel" class="form-label">Time</label>
-                <input type="time" name="waktu_artikel" class="form-control" value="{{ old('waktu_artikel') }}" required>
-            </div>
-        </div>
+        {{-- Date and Time fields have been REMOVED --}}
 
         {{-- Article Content --}}
         <div class="mb-3">
@@ -51,20 +41,21 @@
             <input type="file" name="gambar_cover" class="form-control">
         </div>
 
-        {{-- Status --}}
-        <div class="mb-3">
-            <label for="status" class="form-label">Status</label>
-            <select name="status" class="form-select" required>
-                <option value="draft" {{ old('status') === 'draft' ? 'selected' : '' }}>Draft</option>
-                <option value="published" {{ old('status') === 'published' ? 'selected' : '' }}>Published</option>
-            </select>
-        </div>
+        {{-- Status dropdown has been REMOVED --}}
 
-        {{-- Action Buttons --}}
-        <div class="mt-4">
-            <button id="submit-button" type="submit" class="btn btn-success">
-                <i ></i> Save Article
+        {{-- NEW Action Buttons --}}
+        <div class="mt-4 border-top pt-4">
+            {{-- Tombol "Publish" mengirimkan status 'published' --}}
+            <button type="submit" name="status" value="published" class="btn btn-success submit-btn">
+                <i class="bi bi-check-circle"></i> Publish
             </button>
+
+            {{-- Tombol "Save as Draft" mengirimkan status 'draft' --}}
+            <button type="submit" name="status" value="draft" class="btn btn-primary submit-btn">
+                <i class="bi bi-save"></i> Save as Draft
+            </button>
+
+            {{-- Tombol Cancel hanya link biasa, bukan bagian dari form --}}
             <a href="{{ route('operator.articles.index') }}" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
@@ -73,22 +64,26 @@
 
 @push('scripts')
 <script>
-    // Targets the form with the ID 'article-form'
+    // Menargetkan form dengan ID 'article-form'
     const form = document.getElementById('article-form');
 
-    // Targets the submit button with the ID 'submit-button'
-    const submitButton = document.getElementById('submit-button');
+    // Menargetkan semua tombol submit di dalam form
+    const submitButtons = form.querySelectorAll('.submit-btn');
 
-    // Adds an event listener to the form for the 'submit' event
+    // Menambahkan event listener ke form saat disubmit
     form.addEventListener('submit', function() {
-        // Disables the button to prevent multiple clicks
-        submitButton.disabled = true;
-
-        // Changes the button's text to provide user feedback
-        submitButton.innerHTML = `
-            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            Saving...
-        `;
+        // Loop melalui semua tombol submit
+        submitButtons.forEach(button => {
+            // Menonaktifkan tombol untuk mencegah klik ganda
+            button.disabled = true;
+            // Menambahkan spinner ke tombol yang diklik
+            if (document.activeElement === button) {
+                button.innerHTML = `
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Saving...
+                `;
+            }
+        });
     });
 </script>
 @endpush
