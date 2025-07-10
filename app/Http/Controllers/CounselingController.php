@@ -133,7 +133,7 @@ class CounselingController extends Controller
 
     public function storeReview(Request $request, $consultId)
     {
-        $user = Auth::user();
+        $user = Auth::user(); 
         Review::create([
             'id_user' => $user->id_user,
             'id_dokter' => $request->dokterId,

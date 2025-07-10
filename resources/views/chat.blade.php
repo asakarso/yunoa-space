@@ -136,43 +136,43 @@
 
     <main class="d-flex align-items-center justify-content-center p-md-4">
         <div class="chat-container flex-column shadow-lg">
-            {{-- header --}}
+
             <div class="chat-header flex-row gap-3 align-items-center p-4">
                 <div class="flex gap-3">
-                    <a href="{{ route('counselingList', $dokter->id_user) }}" class="text-dark">
+                   
+                    <a href="{{ route('counselingList', ['userId' => auth()->id()]) }}" class="text-dark">
                         <i class="bi bi-arrow-left fs-2"></i>
                     </a>
-                    <img src="{{ asset('storage/' . $dokter->foto_profil) }}" alt="Foto Profil" class="foto-profil">    
+                    
+                    <img src="{{ asset('storage/' . $lawanBicara->foto_profil) }}" alt="Foto Profil" class="foto-profil">    
                 </div>
                 <div>
-                    <h4 class="fw-bold">{{ $dokter->nama_user }}</h4>
+                    <h4 class="fw-bold">{{ $lawanBicara->nama_user }}</h4>
                     <small class="colors-ijo-tua">Online</small>
                 </div>
             </div>
 
-            {{-- Jendela Chat --}}
+           
             <div class="chat-window">
-                {{-- Area Tampilan Pesan --}}
                 <div id="chat-messages-container" class="chat-messages bg-secondary-subtle">
                     @foreach ($pesans as $pesan)
                         @if($pesan->id_pengirim == auth()->user()->id_user)
                             <div class="message sent">
                                 <span>{{ $pesan->pesan }}</span>
-                                <span class="time">{{ $pesan->created_at->format('H:i') }}</span>
+                                <span class="time">{{ \Carbon\Carbon::parse($pesan->created_at)->format('H:i') }}</span>
                             </div>
                         @else
                             <div class="message received">
                                 <span>{{ $pesan->pesan }}</span>
-                                <span class="time">{{ $pesan->created_at->format('H:i') }}</span>
+                                <span class="time">{{ \Carbon\Carbon::parse($pesan->created_at)->format('H:i') }}</span>
                             </div>
                         @endif
                     @endforeach
                 </div>
+                
                 @if ($konsultasi->status == 'selesai')
                 <div class="text-center p-3 rounded-lg" >
                     <h4 class="mt-3 fw-bold">Consultation has ended</h4>
-                    
-                    {{-- Tombol  review --}}
                     <a href="{{ route('review', $konsultasi->id_konsul) }}" class="btn btn-yunoa-green mt-3">
                         <i class="bi bi-star-fill me-2"></i>
                         @if ($konsultasi->review)
@@ -183,11 +183,10 @@
                     </a>
                 </div>
                 @else
-                {{-- Input Pesan --}}
                 <div class="chat-input">
                     <form method="POST" action="{{ route('chat.send') }}">
                         @csrf
-                        <input type="hidden" name="id_penerima" value="{{ $dokter->id_user }}">
+                        <input type="hidden" name="id_penerima" value="{{ $lawanBicara->id_user }}">
                         <input type="hidden" name="id_konsultasi" value="{{ $konsultasi->id_konsul }}">
                         <div class="input-group">
                             <input type="text" name="pesan" class="form-control border-0" placeholder="Ketik pesan Anda di sini..." autocomplete="off" autofocus>

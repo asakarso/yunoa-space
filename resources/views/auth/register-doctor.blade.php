@@ -5,8 +5,8 @@
     body, html {
         display: flex;
         justify-content: center;
-        align-items: center;
-        padding: 3rem 0;
+        align-items: flex-start;
+        padding: 1rem 0;
         background-color: #e8f5f1;
     }
     .register-container {
@@ -14,8 +14,8 @@
         padding: 2.5rem;
         border-radius: 1rem;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        width: 100%;
-        max-width: 700px;
+        width: 90%;
+        min-width: 800px; 
     }
     .form-group { margin-bottom: 1.25rem; }
     .form-group label {
