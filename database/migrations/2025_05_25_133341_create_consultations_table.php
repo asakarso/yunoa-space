@@ -12,6 +12,7 @@ return new class extends Migration
             $table->increments('id_konsul');
             $table->unsignedInteger('id_user');
             $table->unsignedInteger('id_dokter');
+            $table->unsignedBigInteger('id_payment');
 
             $table->date('tanggal_konsultasi');
             $table->time('jam_mulai');
@@ -22,6 +23,7 @@ return new class extends Migration
 
             $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');
             $table->foreign('id_dokter')->references('id_user')->on('users')->onDelete('cascade');
+            $table->foreign('id_payment')->references('id')->on('payments')->onDelete('cascade');
         });
     }
 

@@ -13,11 +13,11 @@ class ConsultationSeeder extends Seeder
     public function run(): void
     {
         DB::table('consultations')->delete();
-        $tanggal = Carbon::today()->format('Y-m-d');
         DB::table('consultations')->insert([
             [
                 'id_user' => 2,
                 'id_dokter' => 4,
+                'id_payment' => 1,
 
                 'tanggal_konsultasi' => '2025-07-06',
                 'jam_mulai' => '10:00:00',
