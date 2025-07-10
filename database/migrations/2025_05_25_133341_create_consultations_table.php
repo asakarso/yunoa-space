@@ -20,9 +20,8 @@ return new class extends Migration
             $table->text('laporan_hasil')->nullable();
             $table->timestamps();
 
-            // Mendefinisikan Foreign Key Constraints
             $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');
-            $table->foreign('id_dokter')->references('id')->on('doctors')->onDelete('cascade');
+            $table->foreign('id_dokter')->references('id_user')->on('users')->onDelete('cascade');
         });
     }
 
