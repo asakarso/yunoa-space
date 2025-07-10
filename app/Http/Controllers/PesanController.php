@@ -43,13 +43,20 @@ class PesanController extends Controller
             'id_konsultasi' => $request->id_konsultasi
         ]);
 
-        return redirect()->route('chat', $request->id_penerima)->with('success', 'Pesan berhasil dikirim.');
+        return redirect()->route('chat', ['consultId' => $request->id_konsultasi])
+    ->with('success', 'Pesan berhasil dikirim.');
     }
 
     public function showChat($consultId)
     {
         $konsultasi = Consultation::findOrFail($consultId);
-        $dokter = User::findOrFail($konsultasi->id_dokter);
+        $userLogin = auth()->user()->id_user;
+
+if ($userLogin == $konsultasi->id_user) {
+    $lawankonsul = User::findOrFail($konsultasi->id_dokter); // pasien sedang chat dengan dokter
+} else {
+    $lawankonsul = User::findOrFail($konsultasi->id_user); // dokter sedang chat dengan pasien
+}
 
         $user = auth()->user()->id_user;
 
@@ -58,6 +65,11 @@ class PesanController extends Controller
             ->orderBy('created_at')
             ->get();
 
-        return view('chat', compact('pesans', 'konsultasi', 'dokter'));
+        return view('chat', [
+    'pesans' => $pesans,
+    'konsultasi' => $konsultasi,
+    'dokter' => $lawankonsul // meskipun namanya tetap $dokter, ini adalah lawan chat
+]);
+
     }
 }
