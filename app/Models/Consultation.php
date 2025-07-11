@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Pesan;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
@@ -49,7 +50,13 @@ class Consultation extends Model
     }
     
     public function pesan_terakhir()
-    {
-        return $this->hasOne(Pesan::class, 'id_konsul', 'id_konsul')->latestOfMany();
-    }
+{
+    return $this->hasOne(Pesan::class, 'id_konsultasi', 'id_konsul')->latestOfMany();
+}
+
+    public function pesans()
+{
+    return $this->hasMany(\App\Models\Pesan::class, 'id_konsultasi', 'id_konsul')->orderBy('created_at');
+}
+
 }
