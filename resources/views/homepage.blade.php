@@ -143,7 +143,7 @@
                         today by exploring our list of
                         <strong>trusted mental health professionals</strong>.
                     </p>
-                    <button>See More</button>
+                    <button><a href="{{ url('/consultation/add') }}">See More</a></button>
                 </div>
             </div>
         </div>
