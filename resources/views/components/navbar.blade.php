@@ -6,7 +6,7 @@
         : asset('landing-page/logo.png');
 @endphp
 
-@vite('resources/css/components/navbar.css', 'resources/css/app.css')
+@vite(['resources/css/components/navbar.css', 'resources/css/app.css'])
 
 <nav class="navbar container mt-4 d-flex justify-content-between">
     <a class="navbar-brand" href="{{ url('/homepage')}}">
