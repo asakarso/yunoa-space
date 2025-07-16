@@ -203,5 +203,5 @@ class CounselingController extends Controller
             ->get();
 
         return view('counselingList', compact('konsultasi_list'));
-    }
+    } 
 }
