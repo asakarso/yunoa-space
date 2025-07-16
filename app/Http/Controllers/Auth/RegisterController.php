@@ -18,6 +18,7 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {
+        // dd($request->all());
         // Validasi input
         $validatedData = $request->validate([
             'nama_user' => 'required|string|max:255',
