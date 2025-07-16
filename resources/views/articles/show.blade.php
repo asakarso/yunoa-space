@@ -75,7 +75,7 @@
                         <div class="d-flex flex-column gap-3">
                             @forelse ($relatedArticles as $related)
                                 <a href="{{ route('articles.show', $related->id_review) }}" class="side-article-item">
-                                    <img src="{{ asset('storage/' . $related->gambar_cover) }}" alt="{{ $related->judul_artikel }}">
+                                    <img src="{{ asset('storage/article_covers/' . $related->gambar_cover) }}" alt="{{ $related->judul_artikel }}">
                                     <div>
                                         <p class="fw-bold mb-1">{{ $related->judul_artikel }}</p>
                                         {{-- <small class="text-muted">Kesehatan • 5 menit</small> --}}
