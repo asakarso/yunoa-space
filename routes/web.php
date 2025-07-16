@@ -21,7 +21,9 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\DoctorVerificationController;
 
+
 Route::get('/', fn() => view('landingpage'))->name('landing');
+Route::post('/midtrans/callback', [MidtransCallbackController::class, 'callback'])->name('midtrans.callback');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -44,7 +46,8 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-    Route::resource('users', UserManagementController::class)->only(['index', 'create', 'store', 'destroy']);
+    Route::resource('users', UserManagementController::class)->except(['show']);
+
     Route::get('/doctors/verification', [DoctorVerificationController::class, 'index'])->name('doctors.verification');
     Route::get('/doctors/verification/{doctor}', [DoctorVerificationController::class, 'show'])->name('doctors.show');
     Route::post('/doctors/verify/{doctor}', [DoctorVerificationController::class, 'verify'])->name('doctors.verify');
@@ -67,9 +70,9 @@ Route::middleware(['auth', 'role:pengguna'])->group(function () {
     Route::get('/self-assessment/test', [AssessmentController::class, 'showQuestion']);
     Route::post('/self-assessment/store-result', [AssessmentController::class, 'store'])->name('assessment.store');
     Route::get('/self-assessment/result/{asessId}', [AssessmentController::class, 'showResult'])->name('result');
-    Route::get('/consultation/add', [CounselingController::class, 'showDoctors'])->name('consultation');
+    Route::get('/consultation', [CounselingController::class, 'showDoctors'])->name('consultation');
     Route::get('/counseling/payment/{doctor_id}', [CounselingController::class, 'showPayment'])->name('counseling.payment');
-    Route::get('/payment/finish', [CounselingController::class, 'finishPayment'])->name('payment.finish');
+    Route::post('/counseling/payment/{doctor_id}', [CounselingController::class, 'processPayment'])->name('counseling.processPayment');
     Route::get('/counseling/list/{userId}', [PesanController::class, 'showList'])->name('counselingList');
     Route::get('/chat/{consultId}', [PesanController::class, 'showChat'])->name('chat');
     Route::post('/chat/send', [PesanController::class, 'send'])->name('chat.send');
