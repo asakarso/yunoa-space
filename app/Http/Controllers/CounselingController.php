@@ -38,10 +38,6 @@ class CounselingController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->total_konseling < 1) {
-            return redirect()->route('consultation')->with('error', 'Kamu belum pernah melakukan konsultasi gratis.');
-        }
-
         $doctor = User::with('doctor')->findOrFail($doctor_id);
         if (!$doctor || !$doctor->doctor) {
             return redirect()->route('consultation')->with('error', 'Profil dokter tidak ditemukan.');

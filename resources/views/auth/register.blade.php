@@ -92,7 +92,7 @@
             <div class="row g-3 mt-1">
                 <div class="col gender-option">
                     <label for="laki-laki">
-                        <input type="radio" id="laki-laki" name="jenis_kelamin" value="Laki-Laki" {{ old('jenis_kelamin') == 'Laki-Laki' ? 'checked' : '' }} required>
+                        <input type="radio" id="laki-laki" name="jenis_kelamin" value="Male" {{ old('jenis_kelamin') == 'Laki-Laki' ? 'checked' : '' }} required>
                         <div class="card-option">
                             <img src="{{ asset('storage/kelamin/1.png') }}" alt="Male">
                             <span class="fw-bold">Male</span>
@@ -101,7 +101,7 @@
                 </div>
                 <div class="col gender-option">
                     <label for="perempuan">
-                        <input type="radio" id="perempuan" name="jenis_kelamin" value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'checked' : '' }}>
+                        <input type="radio" id="perempuan" name="jenis_kelamin" value="Female" {{ old('jenis_kelamin') == 'Perempuan' ? 'checked' : '' }}>
                         <div class="card-option">
                             <img src="{{ asset('storage/kelamin/2.png') }}" alt="Female">
                             <span class="fw-bold">Female</span>
