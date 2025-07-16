@@ -36,7 +36,7 @@
             <div class="col-lg-8 main-content">
                 <h4 class="fw-bold mb-3">Aktivitas Saya</h4>
 
-                <a href="{{ url('self-assessment/result') }}" class="text-decoration-none">
+                <a href="{{ url('/self-assessment/result/{asessId}') }}" class="text-decoration-none">
                     <div class="card mb-3">
                         <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
