@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 
 class UserManagementController extends Controller
@@ -58,9 +59,37 @@ class UserManagementController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'Administrator created successfully.');
     }
 
+    public function edit(User $user)
+    {
+        $roles = Role::all(); // Ambil semua role untuk fleksibilitas
+        $user->load('roles');
+        return view('admin.users.edit', compact('user', 'roles'));
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $request->validate([
+            'nama_user' => ['required', 'string', 'max:255'],
+            'email_user' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id_user, 'id_user')],
+            'role_id' => ['required', 'exists:roles,id_role'],
+            'pass_user' => ['nullable', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $user->nama_user = $request->nama_user;
+        $user->email_user = $request->email_user;
+
+        if ($request->filled('pass_user')) {
+            $user->pass_user = Hash::make($request->pass_user);
+        }
+
+        $user->save();
+        $user->roles()->sync([$request->role_id]);
+
+        return redirect()->route('admin.users.index')->with('success', 'User updated successfully.');
+    }
+
     public function destroy(User $user)
     {
-        // Prevent deleting self
         if ($user->id_user === auth()->id()) {
             return back()->with('error', 'You cannot delete your own account.');
         }
